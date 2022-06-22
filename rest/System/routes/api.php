@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{SiswaController, AuthController, PengaturanInstansiController, AbsensiController, UserController, AdminController, SyncronController};
+use App\Http\Controllers\{InstansiController, SiswaController, AuthController, PengaturanInstansiController, AbsensiController, UserController, AdminController, SyncronController};
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +63,15 @@ Route::group([
 
 ], function ($router) {
     Route::get('/', [SiswaController::class, 'getSiswa']);
+});
+
+// Instansi  ========================================================
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'instansi'
+
+], function ($router) {
+    Route::post('/', [InstansiController::class, 'getInstansi']);
 });
 
 // Admin  ========================================================

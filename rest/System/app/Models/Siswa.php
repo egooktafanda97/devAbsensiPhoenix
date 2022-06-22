@@ -24,6 +24,7 @@ class Siswa extends Model
         'tahun_masuk',
         'kelas'
     ];
+    
     public function absensi()
     {
         return $this->belongsTo(Absensi::class, 'user_id', 'id_user');

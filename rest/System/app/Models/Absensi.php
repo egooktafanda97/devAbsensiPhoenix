@@ -23,6 +23,10 @@ class Absensi extends Model
         'sync'
     ];
 
+    protected $attributes = [
+        'sync' => false,
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

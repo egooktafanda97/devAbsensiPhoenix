@@ -33,4 +33,9 @@ class Instansi extends Model
         'saldo_payment',
         'kas_sekolah'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

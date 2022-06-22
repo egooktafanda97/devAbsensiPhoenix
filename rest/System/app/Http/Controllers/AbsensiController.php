@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\{Absensi, User, PengaturanInstansi, Hari};
+use Illuminate\Support\Str;
 
 class AbsensiController extends Controller
 {
@@ -47,7 +48,8 @@ class AbsensiController extends Controller
                         'kode_instansi' => $user->kode_instansi,
                         'pengaturan_instansi_id' => $rule->id,
                         'waktu' => $date->toTimeString(),
-                        'keterangan' => $rule->keterangan
+                        'keterangan' => $rule->keterangan,
+                        'session_id' => Str::random(40)
                     ]);
                     return response()->json(["status" => true, "response" => $absensi, "msg" => "Berhasil Melakukan Absensi"], 200);
                 }catch(Exception $e){
@@ -60,14 +62,14 @@ class AbsensiController extends Controller
         }
     }
 
-    public function getAll(){
-        try{
-            $absensi = Absensi::with('siswa')->orderBy('id', 'ASC')->get();
-            return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
-        }catch(Exception $e){
-            return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
-        } 
-    }
+    // public function getAll(){
+    //     try{
+    //         $absensi = Absensi::with('siswa')->orderBy('id', 'ASC')->get();
+    //         return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
+    //     }catch(Exception $e){
+    //         return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
+    //     } 
+    // }
 
     public function getByInstansi(){
         try{

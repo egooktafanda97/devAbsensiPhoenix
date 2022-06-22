@@ -20,6 +20,11 @@ class PengaturanInstansi extends Model
         'tanggal',
         'sync',
     ];
+
+    protected $attributes = [
+        'sync' => false,
+    ];
+
     public function absensi()
     {
         return $this->belongsTo(Absensi::class, 'pengaturan_instansi_id', 'id');

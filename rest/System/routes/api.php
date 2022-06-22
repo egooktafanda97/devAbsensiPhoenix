@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController, PengaturanInstansiController, AbsensiController, UserController, AdminController, SyncronController};
+use App\Http\Controllers\{SiswaController, AuthController, PengaturanInstansiController, AbsensiController, UserController, AdminController, SyncronController};
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +62,7 @@ Route::group([
     'prefix' => 'siswa'
 
 ], function ($router) {
-    Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [SiswaController::class, 'getSiswa']);
 });
 
 // Admin  ========================================================

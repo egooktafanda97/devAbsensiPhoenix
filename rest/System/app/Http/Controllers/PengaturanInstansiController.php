@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\{PengaturanInstansi, Hari};
+use Illuminate\Support\Str;
 
 class PengaturanInstansiController extends Controller
 {
@@ -33,7 +34,8 @@ class PengaturanInstansiController extends Controller
                 'keterangan' => $request->keterangan,
                 'time_start' => $request->time_start,
                 'time_end' => $request->time_end,
-                "tanggal" => date("Y-m-d")
+                "tanggal" => date("Y-m-d"),
+                'session_id' => Str::random(40)
             ]);
             return response()->json(["status" => true, "response" => $rule, "msg" => "data berhasil di input"], 200);
         } catch (Exception $e) {
@@ -69,15 +71,15 @@ class PengaturanInstansiController extends Controller
         }
     }
 
-    public function getAll()
-    {
-        try {
-            $rule = PengaturanInstansi::all()->sortBy('id');
-            return response()->json(["status" => true, "response" => $rule, "msg" => "Succes Get Data"], 200);
-        } catch (Exception $e) {
-            return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
-        }
-    }
+    // public function getAll()
+    // {
+    //     try {
+    //         $rule = PengaturanInstansi::all()->sortBy('id');
+    //         return response()->json(["status" => true, "response" => $rule, "msg" => "Succes Get Data"], 200);
+    //     } catch (Exception $e) {
+    //         return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
+    //     }
+    // }
 
     public function getAllByInstansi()
     {

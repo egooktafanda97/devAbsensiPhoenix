@@ -1,0 +1,93 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
+.foto-coloms {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+  padding: 5px;
+}
+
+#top-cover {
+  padding-right: 10px;
+  padding-top: 50px !important;
+  background-image: url("https://kotajalur.kuansing.go.id/uploads/images/cache/x_395930_187895261311776_100002739116120_243094_1979069116_n.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 250px;
+}
+
+.container-headers {
+  position: relative;
+  max-width: 100%;
+  top: -100px;
+  margin-bottom: -100px;
+}
+
+.container-headers .avatar-upload {
+  max-width: 80%;
+}
+
+.container-headers .avatar-upload .avatar-edit {
+  position: absolute;
+  left: 150px;
+  z-index: 1;
+  top: 10px;
+}
+
+.container-headers .avatar-upload .avatar-edit input {
+  display: none;
+}
+
+.container-headers .avatar-upload .avatar-edit input+label {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 0;
+  border-radius: 100%;
+  background: #FFFFFF;
+  border: 1px solid transparent;
+  -webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  font-weight: normal;
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+}
+
+.container-headers .avatar-upload .avatar-edit input+label:hover {
+  background: #e3e3e3;
+  border-color: #e3e3e3;
+}
+
+.container-headers .avatar-upload .avatar-edit input+label:after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f303";
+  color: #757575;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+}
+
+.container-headers .avatar-upload .avatar-preview {
+  width: 190px;
+  height: 190px;
+  position: relative;
+  border-radius: 100%;
+  border: 6px solid #d0d0d0;
+}
+
+.container-headers .avatar-upload .avatar-preview>div {
+  width: 180px;
+  height: 180px;
+  border-radius: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,20 @@
+[24-Mar-2021 05:20:06 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:18 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:21 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:32 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:43 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:48 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[24-Mar-2021 05:20:54 UTC] PHP Fatal error:  Cannot redeclare Managements::add_f1_kartu_keluarga_mobile() in /home/pulauban/public_html/application/controllers/Managements.php on line 27413
+[15-Nov-2021 02:50:28 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[15-Nov-2021 02:55:37 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[15-Nov-2021 02:55:38 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5738
+[15-Nov-2021 03:01:51 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[15-Nov-2021 03:01:51 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5738
+[15-Nov-2021 03:45:13 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5719
+[15-Nov-2021 03:45:14 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[15-Nov-2021 03:48:50 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[15-Nov-2021 03:48:51 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5738
+[15-Nov-2021 08:50:16 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5730
+[15-Nov-2021 08:51:23 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5730
+[15-Nov-2021 08:51:23 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/phoenixk/oncard/vendor/dompdf/dompdf/lib/Cpdf.php on line 5720
+[17-Mar-2022 04:11:55 UTC] PHP Fatal error:  Cannot redeclare rupiah() (previously declared in /home/phoenixk/oncard/application/helpers/fungsi_helper.php:3) in /home/phoenixk/oncard/application/views/Test/repair.php on line 7

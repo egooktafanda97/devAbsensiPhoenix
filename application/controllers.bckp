@@ -1,0 +1,2355 @@
+<?php
+header('Access-Control-Allow-Origin: *');
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Welcome extends CI_Controller {
+    function __construct(){
+        parent::__construct();
+        $this->load->model('Agivest_model');
+        $this->load->model('Home_model');
+        $this->load->model('Email_model');
+        // $this->load->model('Email_Notification_Expired_model');
+        // $this->load->model('OnlineCashierEmailLibrary');
+        $this->load->helper('form');
+        $this->load->helper('url');
+        $this->load->helper('html');
+        $this->load->helper('string');
+        $this->load->library('form_validation');
+        $this->load->library('session');
+    }
+    public function index()
+    {
+       
+            
+            $this->load->view('loginregister/login.php'); 
+       
+        // $this->load->view('index');
+    }
+
+    public function termsCondition()
+    {
+       
+        if($this->session->userdata('adminSession')){        
+            $namaadmin = $this->session->userdata('adminSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('terms_condition' , $data);
+        }elseif($this->session->userdata('userSession')){        
+            $namaadmin = $this->session->userdata('userSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('terms_condition' , $data);
+        }else{
+            $data['levelUser'] = "";
+            $this->load->view('terms_condition', $data); 
+        }
+       
+        // $this->load->view('index');
+    }
+
+    public function detailPaketTour()
+    {
+       
+        if($this->session->userdata('adminSession')){        
+            $namaadmin = $this->session->userdata('adminSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            $dataID = $this->uri->segment(3);
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*,TIMESTAMPDIFF(day,tglMulaiTour,tglSelesaiTour)+1 as rentangWaktu,DATE_FORMAT(pakettourtravel.tglMulaiTour, '%d %M %Y') tglMulai, DATE_FORMAT(pakettourtravel.tglSelesaiTour, '%d %b %Y') tglSelesai","pakettourtravel", "WHERE statusTour='aktif' AND idPaket=$dataID");
+            
+            $tglMulai ="";
+            foreach ($data['listPaketTour']->result() as $row) {
+                $tglMulai = $row->tglMulaiTour;
+            }
+            $data['tglMulaiTour'] = $tglMulai;
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            $data['dataUserConnected'] = $this->Home_model->getSelectData("*, DATE_FORMAT(user.birthday, '%d %M %Y') tglUltah","user", "WHERE user.idUserRegistering=$idUser");
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('detail_paket_tour' , $data);
+        }elseif($this->session->userdata('userSession')){        
+            $namaadmin = $this->session->userdata('userSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $dataID = $this->uri->segment(3);
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*,TIMESTAMPDIFF(day,tglMulaiTour,tglSelesaiTour)+1 as rentangWaktu,DATE_FORMAT(pakettourtravel.tglMulaiTour, '%d %M %Y') tglMulai, DATE_FORMAT(pakettourtravel.tglSelesaiTour, '%d %b %Y') tglSelesai","pakettourtravel", "WHERE statusTour='aktif' AND idPaket=$dataID");
+
+            $tglMulai ="";
+            foreach ($data['listPaketTour']->result() as $row) {
+                $tglMulai = $row->tglMulaiTour;
+            }
+            $data['tglMulaiTour'] = $tglMulai;
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            $data['dataUserConnected'] = $this->Home_model->getSelectData("*, DATE_FORMAT(user.birthday, '%d %M %Y') tglUltah","user", "WHERE user.idUserRegistering=$idUser");
+            
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('detail_paket_tour' , $data);
+        }else{
+            $data['namaUserGiven'] = "";
+            $data['dataUserConnected'] = "";
+            $dataID = $this->uri->segment(3);
+            $data['idUser'] = "";
+            $data['levelUser'] = "";
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*,TIMESTAMPDIFF(day,tglMulaiTour,tglSelesaiTour)+1 as rentangWaktu,DATE_FORMAT(pakettourtravel.tglMulaiTour, '%d %M %Y') tglMulai, DATE_FORMAT(pakettourtravel.tglSelesaiTour, '%d %b %Y') tglSelesai","pakettourtravel", "WHERE statusTour='aktif' AND idPaket=$dataID");
+
+            $tglMulai ="";
+            foreach ($data['listPaketTour']->result() as $row) {
+                $tglMulai = $row->tglMulaiTour;
+            }
+            $data['tglMulaiTour'] = $tglMulai;
+
+            $this->load->view('detail_paket_tour', $data); 
+        }
+       
+        // $this->load->view('index');
+    }
+
+    public function invoice()
+    {
+            $dataID = $this->uri->segment(3);
+            $getUserResponsible = $this->Home_model->getSelectData("*,TIMESTAMPDIFF(day,tagihanpembayaran.tglPesanan,tagihanpembayaran.tglExpiredPesanan) as rentangWaktu,DATE_FORMAT(tagihanpembayaran.tglExpiredPesanan, '%d %M %Y (%H:%i') tglExpired,DATE_FORMAT(tagihanpembayaran.tglPesanan, '%d %M %Y') tglPembuatan, DATE_FORMAT(tagihanpembayaran.tglPesanan, '%H:%i') jamPembuatan","user, tagihanpembayaran", "WHERE tagihanpembayaran.kodePaketTour='$dataID' AND user.idUser=tagihanpembayaran.idUser");
+
+            $idArray = "";
+
+            foreach ($getUserResponsible->result() as $row) {
+                $idArray = $row->idUser.",".$row->idUserTambahan;
+                $data['kodePesanan'] =  $row->kodePaketTour;
+                $data['getExpiredDate'] =  $row->tglExpired;
+                $data['sisaWaktu'] =  $row->rentangWaktu;
+                $data['totalHarga'] =  $row->hargaTotalPaket;
+                $data['tglPembuatan'] =  $row->tglPembuatan;
+                $data['jamPembuatan'] =  $row->jamPembuatan;
+                $data['statusPembayaran'] =  $row->statusPembayaran;
+            }
+            $data['getDataUsers'] = $this->Home_model->getSelectData("*","user, tagihanpembayaran", "WHERE tagihanpembayaran.kodePaketTour='$dataID' AND user.idUser IN ($idArray)");
+
+
+            $this->load->view('invoice', $data);
+        
+    }
+
+    public function detailArtikel()
+    {
+       
+        if($this->session->userdata('adminSession')){        
+            $namaadmin = $this->session->userdata('adminSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            $dataID = $this->uri->segment(3);
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*, DATE_FORMAT(artikel.tglPublish, '%d %b %Y') tglPublikasi","artikel", "WHERE statusArtikel='aktif' AND idArtikel=$dataID");
+            $data['listKomentar'] = $this->Home_model->getSelectData("*,DATE_FORMAT(artikel.tglPublish, '%d %M %Y') tglPembuatan, DATE_FORMAT(artikel.tglPublish, '%H:%i') jamPembuatan","artikel, komentarartikel", "WHERE artikel.idArtikel=$dataID AND artikel.idArtikel=komentarartikel.idArtikel AND komentarartikel.statusKomentar='aktif' ORDER BY komentarartikel.tglKomentar DESC");
+
+            $namaUser = "";
+            $pictureUser = "";
+
+
+            //UPDATE READ COUNT
+            $this->Home_model->updateCountReadBy($dataID);
+
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            $data['dataUserConnected'] = $this->Home_model->getSelectData("*, DATE_FORMAT(user.birthday, '%d %M %Y') tglUltah","user", "WHERE user.idUserRegistering=$idUser");
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('detail_artikel_blog' , $data);
+        }elseif($this->session->userdata('userSession')){        
+            $namaadmin = $this->session->userdata('userSession');
+            $data['namaLengkap'] = $namaadmin['namaLengkap'];
+            $userLoginName = $namaadmin['namaLengkap'];
+            $data['levelUser'] = "";
+            $data['levelUser'] = $namaadmin['levelUser'];
+            $data['idUser'] = $namaadmin['idUser'];
+            
+            $idUser = $namaadmin['idUser'];
+
+            $dataID = $this->uri->segment(3);
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*, DATE_FORMAT(artikel.tglPublish, '%d %b %Y') tglPublikasi","artikel", "WHERE statusArtikel='aktif' AND idArtikel=$dataID");
+            $data['listKomentar'] = $this->Home_model->getSelectData("*,DATE_FORMAT(artikel.tglPublish, '%d %M %Y') tglPembuatan, DATE_FORMAT(artikel.tglPublish, '%H:%i') jamPembuatan","artikel, komentarartikel", "WHERE artikel.idArtikel=$dataID AND artikel.idArtikel=komentarartikel.idArtikel AND komentarartikel.statusKomentar='aktif' ORDER BY komentarartikel.tglKomentar DESC");
+
+
+            $namaUser = "";
+            $pictureUser = "";
+
+            $selectUser = $this->Home_model->getSelectData("*","user", "WHERE idUser=$idUser");
+            
+            //UPDATE READ COUNT
+            $this->Home_model->updateCountReadBy($dataID);
+
+
+            $data['dataUserConnected'] = $this->Home_model->getSelectData("*, DATE_FORMAT(user.birthday, '%d %M %Y') tglUltah","user", "WHERE user.idUserRegistering=$idUser");
+            
+
+            foreach ($selectUser->result() as $row) {
+                # code...
+                $namaUser = $row->namaLengkap;
+                $pictureUser = $row->pictureProfile;
+            }
+
+            $data['namaUserGiven'] = $namaUser;
+            $data['pictureUserGiven'] = $pictureUser;
+            
+            
+            $this->load->view('detail_artikel_blog' , $data);
+        }else{
+            $data['namaUserGiven'] = "";
+            $data['dataUserConnected'] = "";
+            $dataID = $this->uri->segment(3);
+            $data['idUser'] = "";
+            $data['levelUser'] = "";
+            $data['listPaketTour'] = $this->Home_model->getSelectData("*, DATE_FORMAT(artikel.tglPublish, '%d %b %Y') tglPublikasi","artikel", "WHERE statusArtikel='aktif' AND idArtikel=$dataID");
+
+
+
+            //UPDATE READ COUNT
+            $this->Home_model->updateCountReadBy($dataID);
+
+
+
+            $data['listKomentar'] = $this->Home_model->getSelectData("*,DATE_FORMAT(artikel.tglPublish, '%d %M %Y') tglPembuatan, DATE_FORMAT(artikel.tglPublish, '%H:%i') jamPembuatan","artikel, komentarartikel", "WHERE artikel.idArtikel=$dataID AND artikel.idArtikel=komentarartikel.idArtikel AND komentarartikel.statusKomentar='aktif' ORDER BY komentarartikel.tglKomentar DESC");
+
+            $this->load->view('detail_artikel_blog', $data); 
+        }
+       
+        // $this->load->view('index');
+    }
+
+    public function prosAddComment()
+    {
+        
+            
+         
+            $idArtikel = $this->input->post('idArtikel');
+            $nama = $this->input->post('nama');
+            $komentar = $this->input->post('komentar');
+            
+                    
+                        $dataInput = array(
+                              'idArtikel' => $idArtikel,
+                              'nama' => $nama,
+                              'komentar' => $komentar,
+                              'statusKomentar' => 'aktif',
+                                
+                            );
+                        
+                        $simpan = $this->Home_model->insertData('komentarartikel' , $dataInput);
+
+
+                        redirect('Welcome/detailArtikel/'.$idArtikel.'?stats=success', 'refresh');
+          
+        
+    }
+    
+
+    public function LoginByMobile(){   
+          $username = $this->input->post('username');
+          $password = $this->input->post('password');
+          
+
+        if( $username == '' || $password == '' ){
+          echo json_encode(array( "status" => "false","message" => "Mohon lengkapi kolom inputan terlebih dahulu") );
+        }else{
+            
+          $result = $this->Agivest_model->getDataLoginPenduduk($username);
+          $resultGetByUser = $this->Agivest_model->getDataLoginPendudukUsername($username);
+            
+          //kondisi login menggunakan NIK / nama ibu dulu
+          if($result){
+             
+             $statusMethodLogin = "";
+             foreach($result->result() as $row){
+                 $statusMethodLogin = $row->mobileLoginMethod;
+             }
+             
+             if($statusMethodLogin=='ON'){
+                 $result2 = $this->Agivest_model->getDataCheckLoginedWithUsername($username,md5($password));
+               
+                 $emparray = array();
+                 
+                 echo json_encode(array( "status" => "mustBeLoginWithUsername","message" => "Selamat datang, $namanya.", "datalol" => $emparray) );
+                 
+                 if($result2){
+                   foreach($result2 as $row){
+    
+                    $NIK = $row->NIK;
+                    $namanya = $row->namaLengkap;
+    
+                      $emparray = array(          
+                        'NIK'  => $row->NIK,
+                        'statusLevelUser' => '9'
+                        
+                      );
+                      
+                    }
+    
+                    //UPDATE STATUS LOGINg
+                    // $data = array('statusUserLogined' => "logined");
+                    // $xxx =$this->Home_model->updateData('penduduk' , $data,"NIK=$NIK");
+                                        
+    
+                    // echo json_encode(array( "status" => "mustBeLoginWithUsername","message" => "Selamat datang, $namanya.", "datalol" => $emparray) );
+    
+                 }else {
+                    // echo json_encode(array( "status" => "passSalah","message" => "Login gagal. Data yang diberikan tidak sesuai.") );
+                 }
+             }else {
+                 $result2 = $this->Agivest_model->getDataCheckLogined($username,strtoupper($password));
+               
+                 $emparray = array();
+                 if($result2){  
+                   foreach($result2 as $row){
+    
+                    $NIK = $row->NIK;
+                    $namanya = $row->namaLengkap;
+    
+                      $emparray = array(          
+                        'NIK'  => $row->NIK,
+                        'statusLevelUser' => '9'
+                        
+                      );
+                      
+                    }
+    
+                    //UPDATE STATUS LOGINg
+                    $data = array('statusUserLogined' => "logined");
+                    $xxx =$this->Home_model->updateData('penduduk' , $data,"NIK=$NIK");
+                                        
+    
+                    echo json_encode(array( "status" => "true","message" => "Selamat datang, $namanya.", "datalol" => $emparray) );
+    
+                 }else {
+                    echo json_encode(array( "status" => "false","message" => "Login gagal. Data yang diberikan tidak sesuai.") );
+                 }
+             }
+                
+                
+         //kondisi masukkan langsung dg username
+         }else if($resultGetByUser){
+             
+             $statusMethodLogin = "";
+             foreach($resultGetByUser->result() as $row){
+                 $statusMethodLogin = $row->mobileLoginMethod;
+             }
+             
+             if($statusMethodLogin=='ON'){
+                 $result2 = $this->Agivest_model->getDataCheckLoginedWithUsername($username,md5($password));
+               
+                 $emparray = array();
+                 
+                 if($result2){
+                   foreach($result2 as $row){
+    
+                    $NIK = $row->NIK;
+                    $namanya = $row->namaLengkap;
+    
+                      $emparray = array(          
+                        'NIK'  => $row->NIK,
+                        'statusLevelUser' => '9'
+                        
+                      );
+                      
+                    }
+    
+                    //UPDATE STATUS LOGINg
+                    $data = array('statusUserLogined' => "logined");
+                    $xxx =$this->Home_model->updateData('penduduk' , $data,"NIK=$NIK");
+                                        
+    
+                    echo json_encode(array( "status" => "mustBeLoginWithUsername","message" => "Selamat datang, $namanya.", "datalol" => $emparray) );
+    
+                 }else {
+                    echo json_encode(array( "status" => "passSalah","message" => "Login gagal. Data yang diberikan tidak sesuai.") );
+                 }
+             }else {
+                 $result2 = $this->Agivest_model->getDataCheckLogined($username,strtoupper($password));
+               
+                 $emparray = array();
+                 if($result2){  
+                   foreach($result2 as $row){
+    
+                    $NIK = $row->NIK;
+                    $namanya = $row->namaLengkap;
+    
+                      $emparray = array(          
+                        'NIK'  => $row->NIK,
+                        'statusLevelUser' => '9'
+                        
+                      );
+                      
+                    }
+    
+                    //UPDATE STATUS LOGINg
+                    $data = array('statusUserLogined' => "logined");
+                    $xxx =$this->Home_model->updateData('penduduk' , $data,"NIK=$NIK");
+                                        
+    
+                    echo json_encode(array( "status" => "true","message" => "Selamat datang, $namanya.", "datalol" => $emparray) );
+    
+                 }else {
+                    echo json_encode(array( "status" => "false","message" => "Login gagal. Data yang diberikan tidak sesuai.") );
+                 }
+             }
+                
+         }else{ 
+          echo json_encode(array( "status" => "false","message" => "NIK tidak terdaftar. ") );
+        }
+      }
+       
+    }
+
+    public function getUserInfoFirst()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+
+        $selectAllShop = $this->Home_model->getSelectData("*","penduduk", "WHERE NIK=$dataID");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                'namaLengkap'  => $row->namaLengkap,
+                'NIK' => $row->NIK,
+                'jenisKelamin' => $row->jenisKelamin,
+                'statusPerkawinan' => $row->statusPerkawinan,
+                'tempatLahir' => $row->tempatLahir,
+                'tanggalLahir' => $row->tanggalLahir,
+                'statusPerkawinan' => $row->statusPerkawinan,
+                'pekerjaan' => strtolower($row->pekerjaan),
+                'pekerjaanNormal' => $row->pekerjaan,
+                'loginMethodPageMobile' => $row->mobileLoginMethod,
+                'username' => $row->username,
+
+                
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
+
+    public function getDataDesa()
+    {
+       $result[] = "";
+
+       $kodeDesa = "14.09.02.2028";
+
+        $getDesa = $this->Home_model->getSelectData("*","o_data_desa", "WHERE kodeDesa='$kodeDesa'");
+        foreach ($getDesa->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                'namaDesa'  => $row->namaDesa,
+                'namaKecamatan' => $row->namaKecamatan,
+                'namaKabupaten' => $row->namaKabupaten,
+                'namaProvinsi' => $row->namaProvinsi,
+                'nomorTeleponDesa' => $row->nomorTeleponDesa,
+                'sebutanNamaDesa' => $row->sebutanNamaDesa,
+                
+                
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
+
+    public function getAllNotification()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $detailNotif = $this->uri->segment(4);
+
+       if(!$detailNotif){
+
+            $selectAllShop = $this->Home_model->getSelectData("*,notification.keterangan ketx,DATE_FORMAT(notification.tglCreated, '%d-%m-%Y') tglLahirFormat","notification, penduduk", "WHERE notification.idPenerima=penduduk.NIK AND idPenerima='$dataID' AND idPengirim!='$dataID' GROUP BY notification.randomCode");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+                
+                $dates = "";
+                setlocale(LC_ALL, 'IND');
+                $tglTerbit = strftime('%d %B %Y', strtotime($row->tglCreated));
+                $dates = $tglTerbit;
+
+                $namaPengirim;
+                $getPengirimData = $this->Home_model->getSelectData("*","penduduk", "WHERE penduduk.NIK=".$row->idPengirim);
+                foreach ($getPengirimData->result() as $rowx) {
+                    $namaPengirim = $rowx->namaLengkap;
+                }
+
+                array_push($result,array(
+                    'idNotification'  => $row->id,
+                    'namaLengkap'  => $row->namaLengkap,
+                    'NIK' => $row->NIK,
+                    'subjectNotif' => $row->subjectNotif,
+                    'keterangan' => $row->ketx,
+                    'kode_formulir' => $row->kode_formulir,
+                    'tglCreated' => $dates,
+                    'statusRead' => $row->hasRead,
+                    'namaPengirim' => $namaPengirim,
+                    
+                ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }else {
+
+            $data = array('hasRead' => "READ");
+            $xxx =$this->Home_model->updateData('notification' , $data,"id=$detailNotif");
+
+
+            $selectAllShop = $this->Home_model->getSelectData("*,notification.keterangan ketx,DATE_FORMAT(notification.tglCreated, '%d-%m-%Y %H:%i:%s') tglLahirFormat","notification, penduduk", "WHERE notification.idPenerima=penduduk.NIK AND idPenerima='$dataID' AND notification.id=$detailNotif");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                $namaPengirim;
+                $getPengirimData = $this->Home_model->getSelectData("*","penduduk", "WHERE penduduk.NIK=".$row->idPengirim);
+                foreach ($getPengirimData->result() as $rowx) {
+                    $namaPengirim = $rowx->namaLengkap;
+                }
+
+                array_push($result,array(
+                    'idNotification'  => $row->id,
+                    'namaLengkap'  => $row->namaLengkap,
+                    'NIK' => $row->NIK,
+                    'subjectNotif' => $row->subjectNotif,
+                    'keterangan' => $row->ketx,
+                    'kode_formulir' => $row->kode_formulir,
+                    'tglCreated' => $row->tglLahirFormat,
+                    'namaPengirim' => $namaPengirim,
+                    
+                ));
+            }
+
+
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+
+
+
+    }
+
+    public function getAllRequestSurat()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $detailNotif = $this->uri->segment(4);
+
+       if(!$detailNotif){
+
+        $selectAllShop = $this->Home_model->getSelectData("*,notification.keterangan ketx,DATE_FORMAT(notification.tglCreated, '%d %b %Y') tglCreateds,DATE_FORMAT(notification.tglCreated, '%d-%m-%Y %H:%i:%s') tglLahirFormat","notification, penduduk", "WHERE notification.idPengirim=penduduk.NIK AND notification.idPengirim='$dataID' AND notification.keterangan NOT LIKE 'Hai%' GROUP BY randomCode ORDER BY notification.tglCreated DESC ");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+            
+            $namaPengirim;
+            $getPengirimData = $this->Home_model->getSelectData("*","penduduk", "WHERE penduduk.NIK=".$row->idPengirim);
+            foreach ($getPengirimData->result() as $rowx) {
+                $namaPengirim = $rowx->namaLengkap;
+            }
+
+            array_push($result,array(
+                'idNotification'  => $row->id,
+                'namaLengkap'  => $row->namaLengkap,
+                'NIK' => $row->NIK,
+                'subjectNotif' => $row->subjectNotif,
+                'keterangan' => $row->ketx,
+                'kode_formulir' => $row->kode_formulir,
+                'tglCreateds' => $row->tglCreateds,
+                'tglCreated' => $row->tglLahirFormat,
+                'namaPengirim' => $namaPengirim,
+                'status' => $row->statusNotif,
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+    }else {
+
+        $selectAllShop = $this->Home_model->getSelectData("*,notification.keterangan ketx,DATE_FORMAT(notification.tglCreated, '%d-%m-%Y %H:%i:%s') tglLahirFormat","notification, penduduk", "WHERE notification.idPenerima=penduduk.NIK AND idPenerima='$dataID' AND notification.id=$detailNotif AND notification.keterangan NOT LIKE 'Hai%'");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            $namaPengirim;
+            $getPengirimData = $this->Home_model->getSelectData("*","penduduk", "WHERE penduduk.NIK=".$row->idPengirim);
+            foreach ($getPengirimData->result() as $rowx) {
+                $namaPengirim = $rowx->namaLengkap;
+            }
+
+            array_push($result,array(
+                'idNotification'  => $row->id,
+                'namaLengkap'  => $row->namaLengkap,
+                'NIK' => $row->NIK,
+                'subjectNotif' => $row->subjectNotif,
+                'keterangan' => $row->ketx,
+                'kode_formulir' => $row->kode_formulir,
+                'tglCreated' => $row->tglLahirFormat,
+                'namaPengirim' => $namaPengirim,
+                'status' => $row->statusNotif,
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+    }
+
+
+
+    }
+
+    public function getAllBerita()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $spesific = $this->uri->segment(4);
+
+       if(!$dataID){
+        $selectAllShop = $this->Home_model->getSelectData("*","berita_desa", "WHERE berita_desa.kategori NOT IN ('Pengumuman')  ORDER BY dateCreated DESC");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judul,
+                'kategori' => $row->kategori,
+                'gambar' => base_url().$row->gambar,
+                'isi' => $row->isi,
+                'penulis' => $row->penulis,
+                'dateCreated' => $row->dateCreated,
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+    }else {
+        $selectAllShop = $this->Home_model->getSelectData("*","berita_desa", "WHERE berita_desa.kategori NOT IN ('off','Pengumuman')  AND berita_desa.id=$spesific ORDER BY dateCreated DESC");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                    'id'  => $row->id,
+                    'judul'  => $row->judul,
+                    'kategori' => $row->kategori,
+                    'gambar' => base_url().$row->gambar,
+                    'isi' => $row->isi,
+                    'penulis' => $row->penulis,
+                    'dateCreated' => $row->dateCreated,
+                    
+                ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+        
+
+
+    }
+
+    public function getAllPengumuman()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       
+
+       if(!$dataID){
+        $selectAllShop = $this->Home_model->getSelectData("*","berita_desa", "WHERE berita_desa.kategori IN ('Pengumuman') ORDER BY dateCreated DESC");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           setlocale(LC_ALL, 'IND');
+                $tglTerbit = strftime('%d %B %Y', strtotime($row->dateCreated));
+
+            array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judul,
+                'kategori' => $row->kategori,
+                'gambar' => base_url().$row->gambar,
+                'isi' => $row->isi,
+                'penulis' => $row->penulis,
+                'dateCreated' => $row->dateCreated,
+                'tglTerbit' => $tglTerbit,
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+    }else {
+        $selectAllShop = $this->Home_model->getSelectData("*","berita_desa", "WHERE berita_desa.kategori IN ('Pengumuman') ORDER BY dateCreated DESC");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+                        setlocale(LC_ALL, 'IND');
+                $tglTerbit = strftime('%d %B %Y', strtotime($row->dateCreated));
+
+                array_push($result,array(
+                    'id'  => $row->id,
+                    'judul'  => $row->judul,
+                    'kategori' => $row->kategori,
+                    'gambar' => base_url().$row->gambar,
+                    'isi' => $row->isi,
+                    'penulis' => $row->penulis,
+                    'dateCreated' => $row->dateCreated,
+                    'tglTerbit' => $tglTerbit,
+                    
+                ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+        
+
+
+    }
+
+    public function getAllMarketTopCart()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $spesific = $this->uri->segment(4);
+
+       if(!$spesific){
+        $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' ORDER BY readCount DESC LIMIT 3");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+    }else {
+        $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' AND market_place.id=$spesific ORDER BY readCount DESC LIMIT 3");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+        
+
+
+    }
+
+
+    public function getAllMarketData()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $spesific = $this->uri->segment(4);
+
+       if($spesific){
+
+
+        $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' ORDER BY RAND() ");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }else {
+            $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' AND (market_place.judulUMKM LIKE '%$dataID%')  ORDER BY RAND()");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+        
+
+
+    }
+
+    public function getAllBumdesProduk()
+    {
+        $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $spesific = $this->uri->segment(4);
+
+       $kodeDesa = "14.09.02.2028";
+
+       if($spesific){
+
+
+        $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' AND kodeDesa='$kodeDesa' ORDER BY RAND() ");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }else {
+            $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off'  AND kodeDesa='$kodeDesa' AND (market_place.judulUMKM LIKE '%$dataID%')  ORDER BY RAND()");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        }
+        
+
+
+    }
+
+
+
+
+    public function getDetailProduk()
+    {
+        $result[] = "";
+
+       $spesific = $this->uri->segment(3);
+       
+       
+        $selectAllShop = $this->Home_model->getSelectData("*","market_place", "WHERE market_place.status!='off' AND market_place.id=$spesific ORDER BY readCount DESC");
+            foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+               
+
+                array_push($result,array(
+                'id'  => $row->id,
+                'judul'  => $row->judulUMKM,
+                'produkDari'  => $row->produkDari,
+                'kategori' => $row->jenisProduk,
+                'deskripsi' => $row->deskripsi,
+                'jenisProduk' => $row->jenisProduk,
+                'hargaSatuan' => $row->hargaSatuan,
+                'satuanProduk' => $row->satuanProduk,
+                'pemilik' => $row->pemilik,
+                'alamat' => $row->alamat,
+                'nomorWA' => $row->nomorWA,
+                'dateCreated' => $row->dateCreated,
+                'gambarProduk' => base_url().$row->gambarProduk,
+                
+                
+            ));
+            }
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        
+
+
+    }
+    
+    public function LogOutProManMobileApps()
+    {
+       $result[] = "";
+
+       $dataID = $this->uri->segment(3);
+       $levelUser = $this->uri->segment(4);
+
+       if($levelUser=='9'){
+                //UPDATE STATUS LOGIN
+                $data = array('statusUserLogined' => "off");
+                $xxx =$this->Home_model->updateData('penduduk' , $data,"NIK=$dataID");
+
+                echo json_encode(array('result'=>$result));
+            }else {
+                        //UPDATE STATUS LOGIN
+                // $data = array('statusUserLogined' => "off");
+                // $xxx =$this->Home_model->updateData('user' , $data,"idUser=$dataID");
+
+                echo json_encode(array('result'=>$result));
+            }
+        
+
+    }
+
+    public function checkingNIK()
+    {
+        $result[] = "";
+
+        $idUserLogined = $this->uri->segment(3);
+        
+        
+        
+            $selectAllShop = $this->Home_model->getSelectData("*","penduduk", "WHERE NIK='$idUserLogined'");
+            
+            if($selectAllShop->result()){
+                array_push($result,array(
+                        
+                        'status' => "true"
+                        
+                    ));
+            }else {
+                array_push($result,array(
+                        
+                        'status' => "false"
+                        
+                    ));
+            }
+            
+                //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+        
+    }
+
+    public function ShowFormulirList()
+    {
+            $result[] = "";
+            $dataID = $this->uri->segment(3);
+
+            if ($dataID=="all") {
+                $selectAllShop = $this->Home_model->getSelectData("*","list_formulir", "");
+            
+                foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+                    
+                    array_push($result,array(
+                    "id"=>$row->id,
+                    "namaForm"=>$row->nama_formulir,
+                    "namaFunction"=>$row->nama_function,
+                    
+                    ));
+                }
+
+                
+
+                //Menampilkan Array dalam Format JSON
+                echo json_encode(array('result'=>$result));
+            }else {
+                    $selectAllShop = $this->Home_model->getSelectData("*","list_formulir", "WHERE list_formulir.nama_formulir LIKE '%$dataID%' || list_formulir.kategori_formulir LIKE '%$dataID%'");
+                
+                    foreach ($selectAllShop->result() as $row) {
+                        //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+                        
+                        array_push($result,array(
+                        "id"=>$row->id,
+                        "namaForm"=>$row->nama_formulir,
+                        "namaFunction"=>$row->nama_function,
+                        
+                        ));
+                    }
+                
+                //Menampilkan Array dalam Format JSON
+                echo json_encode(array('result'=>$result));
+
+        }
+    }
+
+    public function tanggapDesaMobile()
+    {
+
+            $keyword="0";
+            $keyword = $this->uri->segment(3);
+            $tipePage = $this->uri->segment(4);
+            // $nikUSERLOGINED = $this->uri->segment(4);
+            $selectUser = $this->Home_model->getSelectData("*","penduduk", "WHERE NIK='$keyword'");
+
+            if ($selectUser->result()) {
+                $data['nikUSERLOGINED'] = $keyword;
+                $data['tipePage'] = $tipePage;
+                $data['namaUserGiven'] = "others";
+                $data['namaLengkap'] = "others";
+                $data['pictureUserGiven'] = 'assets/png/layers-2x.png';
+                $data['jabatan'] = "others";
+
+                $data['listKategoriPengaduan'] = $this->Home_model->getSelectData("*","aspirasi_dan_pengaduan_kategori", "ORDER BY kategori ASC");
+                $data['getDataDesa'] = $this->Home_model->getSelectData("*","o_data_desa", "WHERE status='aktif'");
+
+                // $this->load->view('adminPage/template/header',$data);
+                // $this->load->view('adminPage/template/navigasi' ,$data);
+                $this->load->view('adminPage/aspirasi/tanggap_desa_mobile' ,$data);
+
+            }else {
+                $data['nikUSERLOGINED'] = $nikUSERLOGINED;
+                $data['namaUserGiven'] = "others";
+                $data['namaLengkap'] = "others";
+                $data['pictureUserGiven'] = 'assets/png/layers-2x.png';
+                $data['jabatan'] = "others";
+
+                // $this->load->view('adminPage/template/header');
+                // // $this->load->view('adminPage/template/navigasi' ,$data);
+                // $this->load->view('adminPage/f1_kartu_keluarga/index_mobile' ,$data);
+            }
+        
+        // $this->load->view('index');
+    }
+
+    public function ShowAllDataFromAllFroms()
+    {
+            $result[] = "";
+            $dataID = $this->uri->segment(3);
+
+            if ($dataID=="all") {
+                $selectAllShop = $this->db->query("select 
+                    f1_kartu_keluarga.id,
+                    f1_kartu_keluarga.kode_formulir,
+                    f1_kartu_keluarga.nomorSurat,
+                    f1_kartu_keluarga.randomCode,
+                    penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f1_kartu_keluarga, penduduk, list_formulir
+                WHERE f1_kartu_keluarga.status!='selesai' AND f1_kartu_keluarga.NIK=penduduk.NIK AND tertandai IS NULL AND f1_kartu_keluarga.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f2_pendaftaran_peristiwa_kependudukan.id,
+                    f2_pendaftaran_peristiwa_kependudukan.kode_formulir,
+                    f2_pendaftaran_peristiwa_kependudukan.NIK,
+                    f2_pendaftaran_peristiwa_kependudukan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f2_pendaftaran_peristiwa_kependudukan, penduduk, list_formulir
+                WHERE f2_pendaftaran_peristiwa_kependudukan.status!='selesai' AND f2_pendaftaran_peristiwa_kependudukan.NIK=penduduk.NIK AND tertandai IS NULL AND f2_pendaftaran_peristiwa_kependudukan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f3_perubahan_data_kependudukan.id,
+                    f3_perubahan_data_kependudukan.kode_formulir,
+                    f3_perubahan_data_kependudukan.nomorSurat,
+                    f3_perubahan_data_kependudukan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f3_perubahan_data_kependudukan, penduduk, list_formulir
+                WHERE f3_perubahan_data_kependudukan.status!='selesai' AND f3_perubahan_data_kependudukan.NIK=penduduk.NIK AND tertandai IS NULL AND f3_perubahan_data_kependudukan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f4_formulir_permohonan_ktp.id,
+                    f4_formulir_permohonan_ktp.kode_formulir,
+                    f4_formulir_permohonan_ktp.nomorSurat,
+                    f4_formulir_permohonan_ktp.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f4_formulir_permohonan_ktp, penduduk, list_formulir
+                WHERE f4_formulir_permohonan_ktp.status!='selesai' AND f4_formulir_permohonan_ktp.NIK=penduduk.NIK AND tertandai IS NULL AND f4_formulir_permohonan_ktp.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f5_surat_keterangan_domisili.id,
+                    f5_surat_keterangan_domisili.kode_formulir,
+                    f5_surat_keterangan_domisili.nomorSurat,
+                    f5_surat_keterangan_domisili.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f5_surat_keterangan_domisili, penduduk, list_formulir
+                WHERE f5_surat_keterangan_domisili.status!='selesai' AND f5_surat_keterangan_domisili.NIK=penduduk.NIK AND tertandai IS NULL AND f5_surat_keterangan_domisili.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f6_surat_ket_hilang_kk.id,
+                    f6_surat_ket_hilang_kk.kode_formulir,
+                    f6_surat_ket_hilang_kk.nomorSurat,
+                    f6_surat_ket_hilang_kk.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f6_surat_ket_hilang_kk, penduduk, list_formulir
+                WHERE f6_surat_ket_hilang_kk.status!='selesai' AND f6_surat_ket_hilang_kk.NIK=penduduk.NIK AND tertandai IS NULL AND f6_surat_ket_hilang_kk.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f7_kepindahan.id,
+                    f7_kepindahan.kode_formulir,
+                    f7_kepindahan.nomorSurat,
+                    f7_kepindahan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f7_kepindahan, penduduk, list_formulir
+                WHERE f7_kepindahan.status!='selesai' AND f7_kepindahan.NIK=penduduk.NIK AND tertandai IS NULL AND f7_kepindahan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f8_suket_kelahiran.id,
+                    f8_suket_kelahiran.kode_formulir,
+                    f8_suket_kelahiran.nomorSurat,
+                    f8_suket_kelahiran.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f8_suket_kelahiran, penduduk, list_formulir
+                WHERE f8_suket_kelahiran.status!='selesai' AND f8_suket_kelahiran.NIKAnak=penduduk.NIK AND tertandai IS NULL AND f8_suket_kelahiran.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f9_kebenaran_data_kelahiran.id,
+                    f9_kebenaran_data_kelahiran.kode_formulir,
+                    f9_kebenaran_data_kelahiran.nomorSurat,
+                    f9_kebenaran_data_kelahiran.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f9_kebenaran_data_kelahiran, penduduk, list_formulir
+                WHERE f9_kebenaran_data_kelahiran.status!='selesai' AND f9_kebenaran_data_kelahiran.NIK=penduduk.NIK AND tertandai IS NULL AND f9_kebenaran_data_kelahiran.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f10_kebenaran_pasangan_suamiistri.id,
+                    f10_kebenaran_pasangan_suamiistri.kode_formulir,
+                    f10_kebenaran_pasangan_suamiistri.nomorSurat,
+                    f10_kebenaran_pasangan_suamiistri.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f10_kebenaran_pasangan_suamiistri, penduduk, list_formulir
+                WHERE f10_kebenaran_pasangan_suamiistri.status!='selesai' AND f10_kebenaran_pasangan_suamiistri.NIK=penduduk.NIK AND tertandai IS NULL AND f10_kebenaran_pasangan_suamiistri.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f11_pernyataan_belummemiliki_aktalahir.id,
+                    f11_pernyataan_belummemiliki_aktalahir.kode_formulir,
+                    f11_pernyataan_belummemiliki_aktalahir.nomorSurat,
+                    f11_pernyataan_belummemiliki_aktalahir.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f11_pernyataan_belummemiliki_aktalahir, penduduk, list_formulir
+                WHERE f11_pernyataan_belummemiliki_aktalahir.status!='selesai' AND f11_pernyataan_belummemiliki_aktalahir.NIK=penduduk.NIK AND tertandai IS NULL AND f11_pernyataan_belummemiliki_aktalahir.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f12_surat_keterangan_kematian.id,
+                    f12_surat_keterangan_kematian.kode_formulir,
+                    f12_surat_keterangan_kematian.nomorSurat,
+                    f12_surat_keterangan_kematian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f12_surat_keterangan_kematian, penduduk, list_formulir
+                WHERE f12_surat_keterangan_kematian.status!='selesai' AND f12_surat_keterangan_kematian.NIK=penduduk.NIK AND tertandai IS NULL AND f12_surat_keterangan_kematian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f13_surat_kematian.id,
+                    f13_surat_kematian.kode_formulir,
+                    f13_surat_kematian.nomorSurat,
+                    f13_surat_kematian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f13_surat_kematian, penduduk, list_formulir
+                WHERE f13_surat_kematian.status!='selesai' AND f13_surat_kematian.NIK=penduduk.NIK AND tertandai IS NULL AND f13_surat_kematian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f14_surat_keterangan_penguburan.id,
+                    f14_surat_keterangan_penguburan.kode_formulir,
+                    f14_surat_keterangan_penguburan.nomorSurat,
+                    f14_surat_keterangan_penguburan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f14_surat_keterangan_penguburan, penduduk, list_formulir
+                WHERE f14_surat_keterangan_penguburan.status!='selesai' AND f14_surat_keterangan_penguburan.NIK=penduduk.NIK AND tertandai IS NULL AND f14_surat_keterangan_penguburan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f15_surat_keterangan_pengantar_nikah.id,
+                    f15_surat_keterangan_pengantar_nikah.kode_formulir,
+                    f15_surat_keterangan_pengantar_nikah.nomorSurat,
+                    f15_surat_keterangan_pengantar_nikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f15_surat_keterangan_pengantar_nikah, penduduk, list_formulir
+                WHERE f15_surat_keterangan_pengantar_nikah.status!='selesai' AND f15_surat_keterangan_pengantar_nikah.NIK=penduduk.NIK AND tertandai IS NULL AND f15_surat_keterangan_pengantar_nikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f16_surat_keterangan_pernah_nikah.id,
+                    f16_surat_keterangan_pernah_nikah.kode_formulir,
+                    f16_surat_keterangan_pernah_nikah.nomorSurat,
+                    f16_surat_keterangan_pernah_nikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f16_surat_keterangan_pernah_nikah, penduduk, list_formulir
+                WHERE f16_surat_keterangan_pernah_nikah.status!='selesai' AND f16_surat_keterangan_pernah_nikah.NIK=penduduk.NIK AND tertandai IS NULL AND f16_surat_keterangan_pernah_nikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f17_surat_keterangan_belumpernahnikah.id,
+                    f17_surat_keterangan_belumpernahnikah.kode_formulir,
+                    f17_surat_keterangan_belumpernahnikah.nomorSurat,
+                    f17_surat_keterangan_belumpernahnikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f17_surat_keterangan_belumpernahnikah, penduduk, list_formulir
+                WHERE f17_surat_keterangan_belumpernahnikah.status!='selesai' AND f17_surat_keterangan_belumpernahnikah.NIK=penduduk.NIK AND tertandai IS NULL AND f17_surat_keterangan_belumpernahnikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f18_surat_keterangan_dudajanda.id,
+                    f18_surat_keterangan_dudajanda.kode_formulir,
+                    f18_surat_keterangan_dudajanda.nomorSurat,
+                    f18_surat_keterangan_dudajanda.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f18_surat_keterangan_dudajanda, penduduk, list_formulir
+                WHERE f18_surat_keterangan_dudajanda.status!='selesai' AND f18_surat_keterangan_dudajanda.NIK=penduduk.NIK AND tertandai IS NULL AND f18_surat_keterangan_dudajanda.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f19_surat_keterangan_usaha.id,
+                    f19_surat_keterangan_usaha.kode_formulir,
+                    f19_surat_keterangan_usaha.nomorSurat,
+                    f19_surat_keterangan_usaha.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f19_surat_keterangan_usaha, penduduk, list_formulir
+                WHERE f19_surat_keterangan_usaha.status!='selesai' AND f19_surat_keterangan_usaha.NIK=penduduk.NIK AND tertandai IS NULL AND f19_surat_keterangan_usaha.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f20_surat_keterangan_tempat_usaha.id,
+                    f20_surat_keterangan_tempat_usaha.kode_formulir,
+                    f20_surat_keterangan_tempat_usaha.nomorSurat,
+                    f20_surat_keterangan_tempat_usaha.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f20_surat_keterangan_tempat_usaha, penduduk, list_formulir
+                WHERE f20_surat_keterangan_tempat_usaha.status!='selesai' AND f20_surat_keterangan_tempat_usaha.NIK=penduduk.NIK AND tertandai IS NULL AND f20_surat_keterangan_tempat_usaha.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f21_suket_pengantar_barang.id,
+                    f21_suket_pengantar_barang.kode_formulir,
+                    f21_suket_pengantar_barang.nomorSurat,
+                    f21_suket_pengantar_barang.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f21_suket_pengantar_barang, penduduk, list_formulir
+                WHERE f21_suket_pengantar_barang.status!='selesai' AND f21_suket_pengantar_barang.NIK=penduduk.NIK AND tertandai IS NULL AND f21_suket_pengantar_barang.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f22_suket_pengantar_ternak.id,
+                    f22_suket_pengantar_ternak.kode_formulir,
+                    f22_suket_pengantar_ternak.nomorSurat,
+                    f22_suket_pengantar_ternak.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f22_suket_pengantar_ternak, penduduk, list_formulir
+                WHERE f22_suket_pengantar_ternak.status!='selesai' AND f22_suket_pengantar_ternak.NIK=penduduk.NIK AND tertandai IS NULL AND f22_suket_pengantar_ternak.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f23_surat_keterangan_tidakmampusekolah.id,
+                    f23_surat_keterangan_tidakmampusekolah.kode_formulir,
+                    f23_surat_keterangan_tidakmampusekolah.nomorSurat,
+                    f23_surat_keterangan_tidakmampusekolah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f23_surat_keterangan_tidakmampusekolah, penduduk, list_formulir
+                WHERE f23_surat_keterangan_tidakmampusekolah.status!='selesai' AND f23_surat_keterangan_tidakmampusekolah.NIK=penduduk.NIK AND tertandai IS NULL AND f23_surat_keterangan_tidakmampusekolah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f24_suket_tidakmampuumum.id,
+                    f24_suket_tidakmampuumum.kode_formulir,
+                    f24_suket_tidakmampuumum.nomorSurat,
+                    f24_suket_tidakmampuumum.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f24_suket_tidakmampuumum, penduduk, list_formulir
+                WHERE f24_suket_tidakmampuumum.status!='selesai' AND f24_suket_tidakmampuumum.NIK=penduduk.NIK AND tertandai IS NULL AND f24_suket_tidakmampuumum.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f25_surat_keterangan_rumahtangga_miskinsekali.id,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.kode_formulir,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.nomorSurat,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f25_surat_keterangan_rumahtangga_miskinsekali, penduduk, list_formulir
+                WHERE f25_surat_keterangan_rumahtangga_miskinsekali.status!='selesai' AND f25_surat_keterangan_rumahtangga_miskinsekali.NIK=penduduk.NIK AND tertandai IS NULL AND f25_surat_keterangan_rumahtangga_miskinsekali.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f26_surat_keterangan_penghasilan_orangtua.id,
+                    f26_surat_keterangan_penghasilan_orangtua.kode_formulir,
+                    f26_surat_keterangan_penghasilan_orangtua.nomorSurat,
+                    f26_surat_keterangan_penghasilan_orangtua.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f26_surat_keterangan_penghasilan_orangtua, penduduk, list_formulir
+                WHERE f26_surat_keterangan_penghasilan_orangtua.status!='selesai' AND f26_surat_keterangan_penghasilan_orangtua.NIK=penduduk.NIK AND tertandai IS NULL AND f26_surat_keterangan_penghasilan_orangtua.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f27_permohonan_izin_keramaian_pesta.id,
+                    f27_permohonan_izin_keramaian_pesta.kode_formulir,
+                    f27_permohonan_izin_keramaian_pesta.nomorSurat,
+                    f27_permohonan_izin_keramaian_pesta.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f27_permohonan_izin_keramaian_pesta, penduduk, list_formulir
+                WHERE f27_permohonan_izin_keramaian_pesta.status!='selesai' AND f27_permohonan_izin_keramaian_pesta.NIK=penduduk.NIK AND tertandai IS NULL AND f27_permohonan_izin_keramaian_pesta.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f28_surat_pengantar_skck.id,
+                    f28_surat_pengantar_skck.kode_formulir,
+                    f28_surat_pengantar_skck.nomorSurat,
+                    f28_surat_pengantar_skck.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f28_surat_pengantar_skck, penduduk, list_formulir
+                WHERE f28_surat_pengantar_skck.status!='selesai' AND f28_surat_pengantar_skck.NIK=penduduk.NIK AND tertandai IS NULL AND f28_surat_pengantar_skck.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f29_surat_keterangan_ahli_waris.id,
+                    f29_surat_keterangan_ahli_waris.kode_formulir,
+                    f29_surat_keterangan_ahli_waris.nomorSurat,
+                    f29_surat_keterangan_ahli_waris.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f29_surat_keterangan_ahli_waris, penduduk, list_formulir
+                WHERE f29_surat_keterangan_ahli_waris.status!='selesai' AND f29_surat_keterangan_ahli_waris.NIK=penduduk.NIK AND tertandai IS NULL AND f29_surat_keterangan_ahli_waris.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f30_surat_keterangan_bepergian.id,
+                    f30_surat_keterangan_bepergian.kode_formulir,
+                    f30_surat_keterangan_bepergian.nomorSurat,
+                    f30_surat_keterangan_bepergian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f30_surat_keterangan_bepergian, penduduk, list_formulir
+                WHERE f30_surat_keterangan_bepergian.status!='selesai' AND f30_surat_keterangan_bepergian.NIK=penduduk.NIK AND tertandai IS NULL AND f30_surat_keterangan_bepergian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f31_suket_tidak_ditempat.id,
+                    f31_suket_tidak_ditempat.kode_formulir,
+                    f31_suket_tidak_ditempat.nomorSurat,
+                    f31_suket_tidak_ditempat.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f31_suket_tidak_ditempat, penduduk, list_formulir
+                WHERE f31_suket_tidak_ditempat.status!='selesai' AND f31_suket_tidak_ditempat.NIK=penduduk.NIK AND tertandai IS NULL AND f31_suket_tidak_ditempat.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f32_surat_keterangan_beda_identitas.id,
+                    f32_surat_keterangan_beda_identitas.kode_formulir,
+                    f32_surat_keterangan_beda_identitas.nomorSurat,
+                    f32_surat_keterangan_beda_identitas.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f32_surat_keterangan_beda_identitas, penduduk, list_formulir
+                WHERE f32_surat_keterangan_beda_identitas.status!='selesai' AND f32_surat_keterangan_beda_identitas.NIK=penduduk.NIK AND tertandai IS NULL AND f32_surat_keterangan_beda_identitas.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f33_surat_keterangan_lainnya.id,
+                    f33_surat_keterangan_lainnya.kode_formulir,
+                    f33_surat_keterangan_lainnya.nomorSurat,
+                    f33_surat_keterangan_lainnya.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f33_surat_keterangan_lainnya, penduduk, list_formulir
+                WHERE f33_surat_keterangan_lainnya.status!='selesai' AND f33_surat_keterangan_lainnya.NIK=penduduk.NIK AND tertandai IS NULL AND f33_surat_keterangan_lainnya.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f34_surat_keterangan_pencocokan.id,
+                    f34_surat_keterangan_pencocokan.kode_formulir,
+                    f34_surat_keterangan_pencocokan.nomorSurat,
+                    f34_surat_keterangan_pencocokan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f34_surat_keterangan_pencocokan, penduduk, list_formulir
+                WHERE f34_surat_keterangan_pencocokan.status!='selesai' AND f34_surat_keterangan_pencocokan.NIK=penduduk.NIK AND tertandai IS NULL AND f34_surat_keterangan_pencocokan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f35_sporandik.id,
+                    f35_sporandik.kode_formulir,
+                    f35_sporandik.nomorSurat,
+                    f35_sporandik.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f35_sporandik, penduduk, list_formulir
+                WHERE f35_sporandik.status!='selesai' AND f35_sporandik.NIK=penduduk.NIK AND tertandai IS NULL AND f35_sporandik.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f36_surat_keterangan_kepemilikan_tanah.id,
+                    f36_surat_keterangan_kepemilikan_tanah.kode_formulir,
+                    f36_surat_keterangan_kepemilikan_tanah.nomorSurat,
+                    f36_surat_keterangan_kepemilikan_tanah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f36_surat_keterangan_kepemilikan_tanah, penduduk, list_formulir
+                WHERE f36_surat_keterangan_kepemilikan_tanah.status!='selesai' AND f36_surat_keterangan_kepemilikan_tanah.NIK=penduduk.NIK AND tertandai IS NULL AND f36_surat_keterangan_kepemilikan_tanah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f37_keterangan_jaminanrumah.id,
+                    f37_keterangan_jaminanrumah.kode_formulir,
+                    f37_keterangan_jaminanrumah.nomorSurat,
+                    f37_keterangan_jaminanrumah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f37_keterangan_jaminanrumah, penduduk, list_formulir
+                WHERE f37_keterangan_jaminanrumah.status!='selesai' AND f37_keterangan_jaminanrumah.NIK=penduduk.NIK AND tertandai IS NULL AND f37_keterangan_jaminanrumah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f38_permohonan_mutasi.id,
+                    f38_permohonan_mutasi.kode_formulir,
+                    f38_permohonan_mutasi.nomorSurat,
+                    f38_permohonan_mutasi.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f38_permohonan_mutasi, penduduk, list_formulir
+                WHERE f38_permohonan_mutasi.status!='selesai' AND f38_permohonan_mutasi.NIK=penduduk.NIK AND tertandai IS NULL AND f38_permohonan_mutasi.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f39_keterangan_ahli_waris.id,
+                    f39_keterangan_ahli_waris.kode_formulir,
+                    f39_keterangan_ahli_waris.nomorSurat,
+                    f39_keterangan_ahli_waris.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f39_keterangan_ahli_waris, penduduk, list_formulir
+                WHERE f39_keterangan_ahli_waris.status!='selesai' AND f39_keterangan_ahli_waris.NIK=penduduk.NIK AND tertandai IS NULL AND f39_keterangan_ahli_waris.kode_formulir=list_formulir.kode_formulir
+                UNION
+
+                select 
+                    f41_surat_keterangan_hibah.id,
+                    f41_surat_keterangan_hibah.kode_formulir,
+                    f41_surat_keterangan_hibah.nomorSurat,
+                    f41_surat_keterangan_hibah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f41_surat_keterangan_hibah, penduduk, list_formulir
+                WHERE f41_surat_keterangan_hibah.status!='selesai' AND f41_surat_keterangan_hibah.NIK=penduduk.NIK AND tertandai IS NULL AND f41_surat_keterangan_hibah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f42_surat_kuasa.id,
+                    f42_surat_kuasa.kode_formulir,
+                    f42_surat_kuasa.nomorSurat,
+                    f42_surat_kuasa.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f42_surat_kuasa, penduduk, list_formulir
+                WHERE f42_surat_kuasa.status!='selesai' AND f42_surat_kuasa.NIK=penduduk.NIK AND tertandai IS NULL AND f42_surat_kuasa.kode_formulir=list_formulir.kode_formulir");
+                
+
+                foreach ($selectAllShop->result() as $row) {
+                    //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+                    
+                    $namaFormParsed = $row->nama_function;
+                    $nams = substr($namaFormParsed, 0, -7);
+                    array_push($result,array(
+                    "nomorSurat"=>$row->nomorSurat,
+                    "randomCode"=>$row->randomCode,
+                    "namaLengkap"=>$row->namaLengkap,
+                    "nama_formulir"=>$row->nama_formulir,
+                    "kode_formulir"=>$row->kode_formulir,
+                    "namaFunction"=>$nams,
+                    
+                    ));
+                }
+
+                //Menampilkan Array dalam Format JSON
+                echo json_encode(array('result'=>$result));
+            }else {
+                    $selectAllShop = $this->db->query("select 
+                    f1_kartu_keluarga.id,
+                    f1_kartu_keluarga.kode_formulir,
+                    f1_kartu_keluarga.nomorSurat,
+                    f1_kartu_keluarga.randomCode,
+                    penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f1_kartu_keluarga, penduduk, list_formulir
+                WHERE f1_kartu_keluarga.status!='selesai' AND f1_kartu_keluarga.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f1_kartu_keluarga.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f2_pendaftaran_peristiwa_kependudukan.id,
+                    f2_pendaftaran_peristiwa_kependudukan.kode_formulir,
+                    f2_pendaftaran_peristiwa_kependudukan.NIK,
+                    f2_pendaftaran_peristiwa_kependudukan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f2_pendaftaran_peristiwa_kependudukan, penduduk, list_formulir
+                WHERE f2_pendaftaran_peristiwa_kependudukan.status!='selesai' AND f2_pendaftaran_peristiwa_kependudukan.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f2_pendaftaran_peristiwa_kependudukan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f3_perubahan_data_kependudukan.id,
+                    f3_perubahan_data_kependudukan.kode_formulir,
+                    f3_perubahan_data_kependudukan.nomorSurat,
+                    f3_perubahan_data_kependudukan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f3_perubahan_data_kependudukan, penduduk, list_formulir
+                WHERE f3_perubahan_data_kependudukan.status!='selesai' AND f3_perubahan_data_kependudukan.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f3_perubahan_data_kependudukan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f4_formulir_permohonan_ktp.id,
+                    f4_formulir_permohonan_ktp.kode_formulir,
+                    f4_formulir_permohonan_ktp.nomorSurat,
+                    f4_formulir_permohonan_ktp.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f4_formulir_permohonan_ktp, penduduk, list_formulir
+                WHERE f4_formulir_permohonan_ktp.status!='selesai' AND f4_formulir_permohonan_ktp.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f4_formulir_permohonan_ktp.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f5_surat_keterangan_domisili.id,
+                    f5_surat_keterangan_domisili.kode_formulir,
+                    f5_surat_keterangan_domisili.nomorSurat,
+                    f5_surat_keterangan_domisili.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f5_surat_keterangan_domisili, penduduk, list_formulir
+                WHERE f5_surat_keterangan_domisili.status!='selesai' AND f5_surat_keterangan_domisili.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f5_surat_keterangan_domisili.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f6_surat_ket_hilang_kk.id,
+                    f6_surat_ket_hilang_kk.kode_formulir,
+                    f6_surat_ket_hilang_kk.nomorSurat,
+                    f6_surat_ket_hilang_kk.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f6_surat_ket_hilang_kk, penduduk, list_formulir
+                WHERE f6_surat_ket_hilang_kk.status!='selesai' AND f6_surat_ket_hilang_kk.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f6_surat_ket_hilang_kk.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f7_kepindahan.id,
+                    f7_kepindahan.kode_formulir,
+                    f7_kepindahan.nomorSurat,
+                    f7_kepindahan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f7_kepindahan, penduduk, list_formulir
+                WHERE f7_kepindahan.status!='selesai' AND f7_kepindahan.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f7_kepindahan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f8_suket_kelahiran.id,
+                    f8_suket_kelahiran.kode_formulir,
+                    f8_suket_kelahiran.nomorSurat,
+                    f8_suket_kelahiran.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f8_suket_kelahiran, penduduk, list_formulir
+                WHERE f8_suket_kelahiran.status!='selesai' AND f8_suket_kelahiran.NIKAnak=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f8_suket_kelahiran.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f9_kebenaran_data_kelahiran.id,
+                    f9_kebenaran_data_kelahiran.kode_formulir,
+                    f9_kebenaran_data_kelahiran.nomorSurat,
+                    f9_kebenaran_data_kelahiran.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f9_kebenaran_data_kelahiran, penduduk, list_formulir
+                WHERE f9_kebenaran_data_kelahiran.status!='selesai' AND f9_kebenaran_data_kelahiran.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f9_kebenaran_data_kelahiran.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f10_kebenaran_pasangan_suamiistri.id,
+                    f10_kebenaran_pasangan_suamiistri.kode_formulir,
+                    f10_kebenaran_pasangan_suamiistri.nomorSurat,
+                    f10_kebenaran_pasangan_suamiistri.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f10_kebenaran_pasangan_suamiistri, penduduk, list_formulir
+                WHERE f10_kebenaran_pasangan_suamiistri.status!='selesai' AND f10_kebenaran_pasangan_suamiistri.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f10_kebenaran_pasangan_suamiistri.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f11_pernyataan_belummemiliki_aktalahir.id,
+                    f11_pernyataan_belummemiliki_aktalahir.kode_formulir,
+                    f11_pernyataan_belummemiliki_aktalahir.nomorSurat,
+                    f11_pernyataan_belummemiliki_aktalahir.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f11_pernyataan_belummemiliki_aktalahir, penduduk, list_formulir
+                WHERE f11_pernyataan_belummemiliki_aktalahir.status!='selesai' AND f11_pernyataan_belummemiliki_aktalahir.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f11_pernyataan_belummemiliki_aktalahir.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f12_surat_keterangan_kematian.id,
+                    f12_surat_keterangan_kematian.kode_formulir,
+                    f12_surat_keterangan_kematian.nomorSurat,
+                    f12_surat_keterangan_kematian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f12_surat_keterangan_kematian, penduduk, list_formulir
+                WHERE f12_surat_keterangan_kematian.status!='selesai' AND f12_surat_keterangan_kematian.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f12_surat_keterangan_kematian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f13_surat_kematian.id,
+                    f13_surat_kematian.kode_formulir,
+                    f13_surat_kematian.nomorSurat,
+                    f13_surat_kematian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f13_surat_kematian, penduduk, list_formulir
+                WHERE f13_surat_kematian.status!='selesai' AND f13_surat_kematian.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f13_surat_kematian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f14_surat_keterangan_penguburan.id,
+                    f14_surat_keterangan_penguburan.kode_formulir,
+                    f14_surat_keterangan_penguburan.nomorSurat,
+                    f14_surat_keterangan_penguburan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f14_surat_keterangan_penguburan, penduduk, list_formulir
+                WHERE f14_surat_keterangan_penguburan.status!='selesai' AND f14_surat_keterangan_penguburan.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f14_surat_keterangan_penguburan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f15_surat_keterangan_pengantar_nikah.id,
+                    f15_surat_keterangan_pengantar_nikah.kode_formulir,
+                    f15_surat_keterangan_pengantar_nikah.nomorSurat,
+                    f15_surat_keterangan_pengantar_nikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f15_surat_keterangan_pengantar_nikah, penduduk, list_formulir
+                WHERE f15_surat_keterangan_pengantar_nikah.status!='selesai' AND f15_surat_keterangan_pengantar_nikah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f15_surat_keterangan_pengantar_nikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f16_surat_keterangan_pernah_nikah.id,
+                    f16_surat_keterangan_pernah_nikah.kode_formulir,
+                    f16_surat_keterangan_pernah_nikah.nomorSurat,
+                    f16_surat_keterangan_pernah_nikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f16_surat_keterangan_pernah_nikah, penduduk, list_formulir
+                WHERE f16_surat_keterangan_pernah_nikah.status!='selesai' AND f16_surat_keterangan_pernah_nikah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f16_surat_keterangan_pernah_nikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f17_surat_keterangan_belumpernahnikah.id,
+                    f17_surat_keterangan_belumpernahnikah.kode_formulir,
+                    f17_surat_keterangan_belumpernahnikah.nomorSurat,
+                    f17_surat_keterangan_belumpernahnikah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f17_surat_keterangan_belumpernahnikah, penduduk, list_formulir
+                WHERE f17_surat_keterangan_belumpernahnikah.status!='selesai' AND f17_surat_keterangan_belumpernahnikah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f17_surat_keterangan_belumpernahnikah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f18_surat_keterangan_dudajanda.id,
+                    f18_surat_keterangan_dudajanda.kode_formulir,
+                    f18_surat_keterangan_dudajanda.nomorSurat,
+                    f18_surat_keterangan_dudajanda.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f18_surat_keterangan_dudajanda, penduduk, list_formulir
+                WHERE f18_surat_keterangan_dudajanda.status!='selesai' AND f18_surat_keterangan_dudajanda.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f18_surat_keterangan_dudajanda.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f19_surat_keterangan_usaha.id,
+                    f19_surat_keterangan_usaha.kode_formulir,
+                    f19_surat_keterangan_usaha.nomorSurat,
+                    f19_surat_keterangan_usaha.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f19_surat_keterangan_usaha, penduduk, list_formulir
+                WHERE f19_surat_keterangan_usaha.status!='selesai' AND f19_surat_keterangan_usaha.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f19_surat_keterangan_usaha.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f20_surat_keterangan_tempat_usaha.id,
+                    f20_surat_keterangan_tempat_usaha.kode_formulir,
+                    f20_surat_keterangan_tempat_usaha.nomorSurat,
+                    f20_surat_keterangan_tempat_usaha.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f20_surat_keterangan_tempat_usaha, penduduk, list_formulir
+                WHERE f20_surat_keterangan_tempat_usaha.status!='selesai' AND f20_surat_keterangan_tempat_usaha.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f20_surat_keterangan_tempat_usaha.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f21_suket_pengantar_barang.id,
+                    f21_suket_pengantar_barang.kode_formulir,
+                    f21_suket_pengantar_barang.nomorSurat,
+                    f21_suket_pengantar_barang.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f21_suket_pengantar_barang, penduduk, list_formulir
+                WHERE f21_suket_pengantar_barang.status!='selesai' AND f21_suket_pengantar_barang.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f21_suket_pengantar_barang.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f22_suket_pengantar_ternak.id,
+                    f22_suket_pengantar_ternak.kode_formulir,
+                    f22_suket_pengantar_ternak.nomorSurat,
+                    f22_suket_pengantar_ternak.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f22_suket_pengantar_ternak, penduduk, list_formulir
+                WHERE f22_suket_pengantar_ternak.status!='selesai' AND f22_suket_pengantar_ternak.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f22_suket_pengantar_ternak.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f23_surat_keterangan_tidakmampusekolah.id,
+                    f23_surat_keterangan_tidakmampusekolah.kode_formulir,
+                    f23_surat_keterangan_tidakmampusekolah.nomorSurat,
+                    f23_surat_keterangan_tidakmampusekolah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f23_surat_keterangan_tidakmampusekolah, penduduk, list_formulir
+                WHERE f23_surat_keterangan_tidakmampusekolah.status!='selesai' AND f23_surat_keterangan_tidakmampusekolah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f23_surat_keterangan_tidakmampusekolah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f24_suket_tidakmampuumum.id,
+                    f24_suket_tidakmampuumum.kode_formulir,
+                    f24_suket_tidakmampuumum.nomorSurat,
+                    f24_suket_tidakmampuumum.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f24_suket_tidakmampuumum, penduduk, list_formulir
+                WHERE f24_suket_tidakmampuumum.status!='selesai' AND f24_suket_tidakmampuumum.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f24_suket_tidakmampuumum.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f25_surat_keterangan_rumahtangga_miskinsekali.id,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.kode_formulir,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.nomorSurat,
+                    f25_surat_keterangan_rumahtangga_miskinsekali.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f25_surat_keterangan_rumahtangga_miskinsekali, penduduk, list_formulir
+                WHERE f25_surat_keterangan_rumahtangga_miskinsekali.status!='selesai' AND f25_surat_keterangan_rumahtangga_miskinsekali.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f25_surat_keterangan_rumahtangga_miskinsekali.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f26_surat_keterangan_penghasilan_orangtua.id,
+                    f26_surat_keterangan_penghasilan_orangtua.kode_formulir,
+                    f26_surat_keterangan_penghasilan_orangtua.nomorSurat,
+                    f26_surat_keterangan_penghasilan_orangtua.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f26_surat_keterangan_penghasilan_orangtua, penduduk, list_formulir
+                WHERE f26_surat_keterangan_penghasilan_orangtua.status!='selesai' AND f26_surat_keterangan_penghasilan_orangtua.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f26_surat_keterangan_penghasilan_orangtua.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f27_permohonan_izin_keramaian_pesta.id,
+                    f27_permohonan_izin_keramaian_pesta.kode_formulir,
+                    f27_permohonan_izin_keramaian_pesta.nomorSurat,
+                    f27_permohonan_izin_keramaian_pesta.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f27_permohonan_izin_keramaian_pesta, penduduk, list_formulir
+                WHERE f27_permohonan_izin_keramaian_pesta.status!='selesai' AND f27_permohonan_izin_keramaian_pesta.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f27_permohonan_izin_keramaian_pesta.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f28_surat_pengantar_skck.id,
+                    f28_surat_pengantar_skck.kode_formulir,
+                    f28_surat_pengantar_skck.nomorSurat,
+                    f28_surat_pengantar_skck.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f28_surat_pengantar_skck, penduduk, list_formulir
+                WHERE f28_surat_pengantar_skck.status!='selesai' AND f28_surat_pengantar_skck.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f28_surat_pengantar_skck.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f29_surat_keterangan_ahli_waris.id,
+                    f29_surat_keterangan_ahli_waris.kode_formulir,
+                    f29_surat_keterangan_ahli_waris.nomorSurat,
+                    f29_surat_keterangan_ahli_waris.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f29_surat_keterangan_ahli_waris, penduduk, list_formulir
+                WHERE f29_surat_keterangan_ahli_waris.status!='selesai' AND f29_surat_keterangan_ahli_waris.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f29_surat_keterangan_ahli_waris.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f30_surat_keterangan_bepergian.id,
+                    f30_surat_keterangan_bepergian.kode_formulir,
+                    f30_surat_keterangan_bepergian.nomorSurat,
+                    f30_surat_keterangan_bepergian.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f30_surat_keterangan_bepergian, penduduk, list_formulir
+                WHERE f30_surat_keterangan_bepergian.status!='selesai' AND f30_surat_keterangan_bepergian.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f30_surat_keterangan_bepergian.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f31_suket_tidak_ditempat.id,
+                    f31_suket_tidak_ditempat.kode_formulir,
+                    f31_suket_tidak_ditempat.nomorSurat,
+                    f31_suket_tidak_ditempat.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f31_suket_tidak_ditempat, penduduk, list_formulir
+                WHERE f31_suket_tidak_ditempat.status!='selesai' AND f31_suket_tidak_ditempat.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f31_suket_tidak_ditempat.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f32_surat_keterangan_beda_identitas.id,
+                    f32_surat_keterangan_beda_identitas.kode_formulir,
+                    f32_surat_keterangan_beda_identitas.nomorSurat,
+                    f32_surat_keterangan_beda_identitas.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f32_surat_keterangan_beda_identitas, penduduk, list_formulir
+                WHERE f32_surat_keterangan_beda_identitas.status!='selesai' AND f32_surat_keterangan_beda_identitas.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f32_surat_keterangan_beda_identitas.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f33_surat_keterangan_lainnya.id,
+                    f33_surat_keterangan_lainnya.kode_formulir,
+                    f33_surat_keterangan_lainnya.nomorSurat,
+                    f33_surat_keterangan_lainnya.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f33_surat_keterangan_lainnya, penduduk, list_formulir
+                WHERE f33_surat_keterangan_lainnya.status!='selesai' AND f33_surat_keterangan_lainnya.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f33_surat_keterangan_lainnya.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f34_surat_keterangan_pencocokan.id,
+                    f34_surat_keterangan_pencocokan.kode_formulir,
+                    f34_surat_keterangan_pencocokan.nomorSurat,
+                    f34_surat_keterangan_pencocokan.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f34_surat_keterangan_pencocokan, penduduk, list_formulir
+                WHERE f34_surat_keterangan_pencocokan.status!='selesai' AND f34_surat_keterangan_pencocokan.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f34_surat_keterangan_pencocokan.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f35_sporandik.id,
+                    f35_sporandik.kode_formulir,
+                    f35_sporandik.nomorSurat,
+                    f35_sporandik.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f35_sporandik, penduduk, list_formulir
+                WHERE f35_sporandik.status!='selesai' AND f35_sporandik.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f35_sporandik.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f36_surat_keterangan_kepemilikan_tanah.id,
+                    f36_surat_keterangan_kepemilikan_tanah.kode_formulir,
+                    f36_surat_keterangan_kepemilikan_tanah.nomorSurat,
+                    f36_surat_keterangan_kepemilikan_tanah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f36_surat_keterangan_kepemilikan_tanah, penduduk, list_formulir
+                WHERE f36_surat_keterangan_kepemilikan_tanah.status!='selesai' AND f36_surat_keterangan_kepemilikan_tanah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f36_surat_keterangan_kepemilikan_tanah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f37_keterangan_jaminanrumah.id,
+                    f37_keterangan_jaminanrumah.kode_formulir,
+                    f37_keterangan_jaminanrumah.nomorSurat,
+                    f37_keterangan_jaminanrumah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f37_keterangan_jaminanrumah, penduduk, list_formulir
+                WHERE f37_keterangan_jaminanrumah.status!='selesai' AND f37_keterangan_jaminanrumah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f37_keterangan_jaminanrumah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f38_permohonan_mutasi.id,
+                    f38_permohonan_mutasi.kode_formulir,
+                    f38_permohonan_mutasi.nomorSurat,
+                    f38_permohonan_mutasi.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f38_permohonan_mutasi, penduduk, list_formulir
+                WHERE f38_permohonan_mutasi.status!='selesai' AND f38_permohonan_mutasi.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f38_permohonan_mutasi.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f39_keterangan_ahli_waris.id,
+                    f39_keterangan_ahli_waris.kode_formulir,
+                    f39_keterangan_ahli_waris.nomorSurat,
+                    f39_keterangan_ahli_waris.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f39_keterangan_ahli_waris, penduduk, list_formulir
+                WHERE f39_keterangan_ahli_waris.status!='selesai' AND f39_keterangan_ahli_waris.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f39_keterangan_ahli_waris.kode_formulir=list_formulir.kode_formulir
+                UNION
+
+                select 
+                    f41_surat_keterangan_hibah.id,
+                    f41_surat_keterangan_hibah.kode_formulir,
+                    f41_surat_keterangan_hibah.nomorSurat,
+                    f41_surat_keterangan_hibah.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f41_surat_keterangan_hibah, penduduk, list_formulir
+                WHERE f41_surat_keterangan_hibah.status!='selesai' AND f41_surat_keterangan_hibah.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f41_surat_keterangan_hibah.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f42_surat_kuasa.id,
+                    f42_surat_kuasa.kode_formulir,
+                    f42_surat_kuasa.nomorSurat,
+                    f42_surat_kuasa.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f42_surat_kuasa, penduduk, list_formulir
+                WHERE f42_surat_kuasa.status!='selesai' AND f42_surat_kuasa.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f42_surat_kuasa.kode_formulir=list_formulir.kode_formulir
+                UNION
+                select 
+                    f43_pengajuan_registrasiprodukumkm.id,
+                    f43_pengajuan_registrasiprodukumkm.kode_formulir,
+                    f43_pengajuan_registrasiprodukumkm.nomorSurat,
+                    f43_pengajuan_registrasiprodukumkm.randomCode,
+                penduduk.namaLengkap, list_formulir.nama_formulir, list_formulir.nama_function
+                from 
+                    f43_pengajuan_registrasiprodukumkm, penduduk, list_formulir
+                WHERE f43_pengajuan_registrasiprodukumkm.status!='selesai' AND f43_pengajuan_registrasiprodukumkm.NIK=penduduk.NIK AND tertandai IS NULL  AND (list_formulir.nama_formulir LIKE '%$dataID%' || penduduk.namaLengkap LIKE '%$dataID%') AND f43_pengajuan_registrasiprodukumkm.kode_formulir=list_formulir.kode_formulir");
+                
+                    foreach ($selectAllShop->result() as $row) {
+                        //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+                        
+                        $namaFormParsed = $row->nama_function;
+                        $nams = substr($namaFormParsed, 0, -7);
+                        array_push($result,array(
+                        "nomorSurat"=>$row->nomorSurat,
+                        "randomCode"=>$row->randomCode,
+                        "namaLengkap"=>$row->namaLengkap,
+                        "nama_formulir"=>$row->nama_formulir,
+                        "kode_formulir"=>$row->kode_formulir,
+                        "namaFunction"=>$nams,
+                        
+                        ));
+                    }
+                
+                //Menampilkan Array dalam Format JSON
+                echo json_encode(array('result'=>$result));
+
+        }
+    }
+
+    public function ShowNotification()
+    {
+            $result[] = "";
+
+            $dataID = $this->uri->segment(3);
+            
+            
+                    $selectAllShop = $this->Home_model->getSelectData("*,notification.keterangan ketx,DATE_FORMAT(notification.tglCreated, '%d-%m-%Y %H:%i:%s') as tglTerbuatNya","notification,penduduk", "WHERE statusNotif='belum_dibaca' AND notification.idPenerima=penduduk.NIK AND notification.hasShown=0 AND idPenerima='$dataID' AND idPengirim!='$dataID'" );
+                        foreach ($selectAllShop->result() as $row) {
+                            //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat
+
+
+                            
+                            array_push($result,array(
+                            "idNotification"=>$row->id,
+                            "idPenerima"=>$row->idPenerima,
+                            "idPengirim"=>$row->idPengirim,
+                            "subjectNotif"=>$row->subjectNotif,
+                            "namaUser"=>$row->namaLengkap,
+                            "NIK"=>$row->NIK,
+                            "tglCreated"=>$row->tglTerbuatNya,
+                            "isiPesan"=> $row->ketx,
+                            "judulPesan"=>$row->subjectNotif,
+
+                            ));
+
+                            if ($row->idPenerima==$dataID && $row->hasShown=="0") {
+                                $data = array(
+                                    'hasShown' => 1,
+                                    
+                                );
+
+                                $xxx =$this->Home_model->updateData('notification' , $data,"idPenerima='$dataID'");
+                            }
+                            
+                        }
+
+            
+            //Menampilkan Array dalam Format JSON
+            echo json_encode(array('result'=>$result));
+            
+
+    }
+
+    public function updateStatusNotificationRead()
+    {
+        $result[] = "";
+
+        $idNotification = $this->input->post('idNotification');
+        
+               $data = array(
+                                'statusNotif' => 'dibaca',
+                            );
+            
+                $xxx = $this->Home_model->updateData('notification' , $data, "idNotification=$idNotification");
+
+                if ($xxx) {
+                    array_push($result,array(
+                        'status'  => "true",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                
+                }else {
+                   array_push($result,array(
+                        'status'  => "false",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+
+
+    }
+
+    
+    public function updateOnOffLineStats()
+    {
+        $result[] = "";
+
+        $dataID = $this->uri->segment(3);
+        $stats = $this->uri->segment(4);
+        
+               $data = array(
+                                'statusIfUserLogin' => $stats,
+                            );
+            
+                $xxx = $this->Home_model->updateData('penduduk' , $data, "NIK=$dataID");
+
+                if ($xxx) {
+                    array_push($result,array(
+                        'status'  => "true",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                
+                }else {
+                   array_push($result,array(
+                        'status'  => "false",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+
+
+    }
+
+    public function checkDataUserFirst()
+    {
+        $result[] = "";
+
+        $valueChecked = $this->uri->segment(3);
+        
+        $idOrangSend = $this->uri->segment(4);
+        
+                $data = array(
+                                'mobileLoginMethod' => $valueChecked,
+                            );
+                 $xxx = $this->Home_model->updateData('penduduk' , $data, "NIK='$idOrangSend'");
+
+                if ($xxx) {
+                    array_push($result,array(
+                        'status'  => $valueChecked,
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                
+                }else {
+                    array_push($result,array(
+                        'status'  => "false",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+
+
+
+    }
+
+    public function updateAksesLogin()
+    {
+        $result[] = "";
+
+        $user = $this->uri->segment(3);
+        $pass = $this->uri->segment(4);
+        $idUserLogined = $this->uri->segment(5);
+        
+                $data = array(
+                                'username' => $user,
+                                'password' => md5($pass),
+                            );
+                 $xxx = $this->Home_model->updateData('penduduk' , $data, "NIK='$idUserLogined'");
+
+                if ($xxx) {
+                    array_push($result,array(
+                        'status'  => "true",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                
+                }else {
+                    array_push($result,array(
+                        'status'  => "false",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+
+
+
+    }
+
+    public function checkUsernameAvailability()
+    {
+        $result[] = "";
+
+        $usernameSent = $this->uri->segment(3);
+        $idUserLogined = $this->uri->segment(4);
+
+        $selectUser = $this->Home_model->getSelectData("*","penduduk", "WHERE NIK='$idUserLogined'");
+        
+            if($selectUser->result()){
+        
+                 $selectUserWithin = $this->Home_model->getSelectData("*","penduduk", "WHERE username='$usernameSent'");        
+
+                if ($selectUserWithin->result()) {
+                    array_push($result,array(
+                        'status'  => "not_available",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                }else {
+                    array_push($result,array(
+                        'status'  => "available",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+            }else {
+                array_push($result,array(
+                        'status'  => "intruder?!",
+                    ));
+                    echo json_encode(array('result'=>$result));
+            }
+
+
+
+    }
+
+    public function updateStatusSigned()
+    {
+        $result[] = "";
+
+        $idSurat = $this->uri->segment(3);
+        $idUserLogined = $this->uri->segment(4);
+        $namaFunctionForm = $this->uri->segment(5);
+
+        $statusUser = "";
+        $selectUser = $this->Home_model->getSelectData("*","user", "WHERE NIK='$idUserLogined' AND jabatan LIKE '%Kepala Desa%'");
+
+        if($selectUser->result()){
+                $data = array(
+                                'tertandai' => "signed",
+                            );
+            
+                $xxx = $this->Home_model->updateData($namaFunctionForm , $data, "randomCode='$idSurat'");
+
+                if ($xxx) {
+                    array_push($result,array(
+                        'status'  => "true",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                
+                
+                }else {
+                    array_push($result,array(
+                        'status'  => "false",
+                    ));
+                    echo json_encode(array('result'=>$result));
+                }
+        }else {
+                    array_push($result,array(
+                        'status'  => "wronglogin",
+                    ));
+                    echo json_encode(array('result'=>$result));
+        }
+        
+               
+
+
+    }
+
+    public function loginMethodPageMobile()
+    {
+            $keyword="0";
+            $keyword = $this->uri->segment(3);
+            $selectUser = $this->Home_model->getSelectData("*","penduduk", "WHERE NIK='$keyword'");
+
+            if ($selectUser->result()) {
+                $data['nikUSERLOGINED'] = $keyword;
+                $data['namaUserGiven'] = "others";
+                $data['namaLengkap'] = "others";
+                $data['pictureUserGiven'] = 'assets/png/layers-2x.png';
+                $data['jabatan'] = "others";
+
+                // $this->load->view('adminPage/template/header');
+                // $this->load->view('adminPage/template/navigasi' ,$data);
+                $this->load->view('adminPage/login_method_mobile/index_mobile' ,$data);
+
+            }else {
+                $data['nikUSERLOGINED'] = $keyword;
+                $data['namaUserGiven'] = "others";
+                $data['namaLengkap'] = "others";
+                $data['pictureUserGiven'] = 'assets/png/layers-2x.png';
+                $data['jabatan'] = "others";
+
+                // $this->load->view('adminPage/template/header');
+                // // $this->load->view('adminPage/template/navigasi' ,$data);
+                // $this->load->view('adminPage/f1_kartu_keluarga/index_mobile' ,$data);
+            }
+
+    }
+    
+}

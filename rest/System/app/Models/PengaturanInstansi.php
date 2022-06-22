@@ -12,9 +12,16 @@ class PengaturanInstansi extends Model
     protected $table = 'pengaturan_instansi';
     protected $fillable = [
         'kode_instansi',
+        'session_id',
         'id_hari',
         'keterangan',
         'time_start',
-        'time_end'
+        'time_end',
+        'tanggal',
+        'sync',
     ];
+    public function absensi()
+    {
+        return $this->belongsTo(Absensi::class, 'pengaturan_instansi_id', 'id');
+    }
 }

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PengaturanInstansi;
+use App\Models\User;
+use App\Models\Siswa;
 
 class Absensi extends Model
 {
@@ -12,6 +15,7 @@ class Absensi extends Model
     protected $table = 'absensi';
     protected $fillable = [
         'user_id',
+        'session_id',
         'kode_instansi',
         'pengaturan_instansi_id',
         'waktu',
@@ -19,11 +23,17 @@ class Absensi extends Model
         'sync'
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function siswa(){
+    public function siswa()
+    {
         return $this->belongsTo(Siswa::class, 'user_id', 'id_user');
+    }
+    public function pengaturanInstansi()
+    {
+        return $this->belongsTo(PengaturanInstansi::class, 'pengaturan_instansi_id', 'id');
     }
 }

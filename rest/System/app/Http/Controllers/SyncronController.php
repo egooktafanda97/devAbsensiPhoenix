@@ -4,44 +4,54 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\{Absensi, User, PengaturanInstansi, Hari};
+use App\Models\{Absensi, User, PengaturanInstansi, Hari, Instansi};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
+// bikin random
+use Illuminate\Support\Str;
+// Str::random(40);
 
 class SyncronController extends Controller
 {
-    // public function push(){
-    //     $absensi_server = DB::connection('db-server')->table('absensi')->select('user_id')->whereDate('created_at', Carbon::today())->get();
-    //     $absensi = Absensi::whereNotIn('user_id', $absensi_server)->whereDate('created_at', Carbon::today())->get();
-        
-    //     if(empty($absensi)){
-    //         return response()->json(["status" => false, "response" => "", "msg" => "Tidak ada data absensi"], 400);
-    //     }
-    //     else{
-    //         foreach($absensi as $data){
-    //                 DB::connection('db-server')->table('absensi')->insert([
-    //                     'id' => $data->id,
-    //                     'user_id' => $data->user_id,
-    //                     'kode_instansi' => $data->kode_instansi,
-    //                     'pengaturan_instansi_id' => $data->pengaturan_instansi_id,
-    //                     'waktu' => $data->waktu,
-    //                     'keterangan' => $data->keterangan,
-    //                     'created_at' => Carbon::now(),
-    //                     'updated_at' => Carbon::now()
-    //                 ]);
-    //         }
-    //         return response()->json(["status" => true, "response" => $absensi, "msg" => "Berhasil Menyalin Data"], 200);
-    //     }
-    // }
+    private $serverUrl = "";
+    private $key = "";
+    public function __construct()
+    {
+        $instansi = Instansi::first();
+        $this->serverUrl = env('SERVER_URL');
+        $this->key = $instansi->lisensi;
+    }
 
-    public function syncronus(){
-        // $getAbs = Absensi::where('sync',false)->with('siswa','user')->get();
-        // print_r(env(SERVER_URL));
-        // $response = Http::post(env(SERVER_URL), [
-        //     'name' => 'Steve',
-        //     'role' => 'Network Administrator',
-        // ]);
-        return response()->json("ok");
+    public function syncronus()
+    {
+        $getAbs = Absensi::where('sync', false)->with('siswa', 'pengaturanInstansi')->get();
+        $newdata = [];
+        foreach ($getAbs as $val) {
+            if (!empty($val->pengaturanInstansi != null) && $val->pengaturanInstansi  != null) {
+                array_push($newdata, $val);
+            }
+        }
+        $getPengaturanInstansi = PengaturanInstansi::where('sync', false)->get();
+        $response = Http::post($this->serverUrl . "sync/push-absen", [
+            'key' => $this->key,
+            "ip" => request()->ip(),
+            'data' => $newdata,
+            "pengaturan" => $getPengaturanInstansi
+        ]);
+        if ($response->status() == 200) {
+            $result = json_decode($response->body(), true);
+            foreach ($result['absen']['success'] as  $success) {
+                Absensi::where('session_id', $success['session_id'])->update([
+                    "sync" => true
+                ]);
+            }
+            foreach ($result['pengeturan']['success'] as $v) {
+                PengaturanInstansi::where('session_id', $v['session_id'])->update([
+                    "sync" => true
+                ]);
+            }
+        }
+        return response()->json(json_decode($response->body()));
     }
 }

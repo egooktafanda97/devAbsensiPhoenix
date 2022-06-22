@@ -24,12 +24,13 @@ class Siswa extends Model
         'tahun_masuk',
         'kelas'
     ];
-
-    public function absensi(){
+    public function absensi()
+    {
         return $this->belongsTo(Absensi::class, 'user_id', 'id_user');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class, 'id_user');
     }
 }

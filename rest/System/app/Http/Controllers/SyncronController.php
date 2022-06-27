@@ -26,15 +26,11 @@ class SyncronController extends Controller
     public function syncronus()
     {
         $getAbs = Absensi::where('sync', false)->with('siswa', 'pengaturanInstansi')->get();
-        $newdata = [];
-        foreach ($getAbs as $val) {
-            array_push($newdata, $val);
-        }
         $getPengaturanInstansi = PengaturanInstansi::where('sync', false)->get();
         $response = Http::post($this->serverUrl . "sync/push-absen", [
             'key' => $this->key,
             "ip" => request()->ip(),
-            'data' => $newdata,
+            'data' => $getAbs,
             "pengaturan" => $getPengaturanInstansi
         ]);
         if ($response->status() == 200) {

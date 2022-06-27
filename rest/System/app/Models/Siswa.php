@@ -27,7 +27,7 @@ class Siswa extends Model
     
     public function absensi()
     {
-        return $this->belongsTo(Absensi::class, 'user_id', 'id_user');
+        return $this->setConnection('mysql')->hasMany(Absensi::class, 'user_id', 'id_user');
     }
 
     public function user()

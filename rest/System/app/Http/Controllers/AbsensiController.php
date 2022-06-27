@@ -49,7 +49,8 @@ class AbsensiController extends Controller
                         'pengaturan_instansi_id' => $rule->id,
                         'waktu' => $date->toTimeString(),
                         'keterangan' => $rule->keterangan,
-                        'session_id' => Str::random(40)
+                        'session_id' => Str::random(40),
+                        'tanggal' => $date->toDateString()
                     ]);
                     return response()->json(["status" => true, "response" => $absensi, "msg" => "Berhasil Melakukan Absensi"], 200);
                 }catch(Exception $e){

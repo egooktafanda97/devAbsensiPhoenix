@@ -234,8 +234,8 @@ class AuthController extends Controller
         if ($auth_data->role == 'INSTANSI' && Instansi::where('user_id', $auth_data->id)->count() > 0) {
             $auth_data = DB::table('users')
                 ->where('users.id', $auth_data->id)
-                ->join('instansi', function ($join) {
-                    $join->on('instansi.user_id', '=', 'users.id');
+                ->join('instansis', function ($join) {
+                    $join->on('instansis.user_id', '=', 'users.id');
                 })
                 ->first();
         } elseif ($auth_data->role == 'KANTIN' && Kantin::where('user_id', $auth_data->id)->count() > 0) {

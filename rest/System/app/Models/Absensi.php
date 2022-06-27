@@ -20,6 +20,7 @@ class Absensi extends Model
         'pengaturan_instansi_id',
         'waktu',
         'keterangan',
+        'tanggal',
         'sync'
     ];
 

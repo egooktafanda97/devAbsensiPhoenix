@@ -14,7 +14,9 @@ class SiswaController extends Controller
     }
 
     public function getSiswa(){
-        $siswa = Siswa::where('kode_instansi', auth()->user()->kode_instansi)->with('user')->get();
+        $siswa = Siswa::where('kode_instansi', auth()->user()->kode_instansi)->with(['user', 'absensi' => function($q){
+            $q->whereDate('created_at', Carbon::today());
+        }])->get();
 
         return response()->json(["status" => true, "response" => $siswa, "msg" => "Succes Get Data"], 200);
     }

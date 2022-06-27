@@ -28,9 +28,7 @@ class SyncronController extends Controller
         $getAbs = Absensi::where('sync', false)->with('siswa', 'pengaturanInstansi')->get();
         $newdata = [];
         foreach ($getAbs as $val) {
-            if (!empty($val->pengaturanInstansi != null) && $val->pengaturanInstansi  != null) {
-                array_push($newdata, $val);
-            }
+            array_push($newdata, $val);
         }
         $getPengaturanInstansi = PengaturanInstansi::where('sync', false)->get();
         $response = Http::post($this->serverUrl . "sync/push-absen", [
@@ -46,7 +44,7 @@ class SyncronController extends Controller
                     "sync" => true
                 ]);
             }
-            foreach ($result['pengeturan']['success'] as $v) {
+            foreach ($result['pengaturan']['success'] as $v) {
                 PengaturanInstansi::where('session_id', $v['session_id'])->update([
                     "sync" => true
                 ]);

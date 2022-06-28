@@ -50,99 +50,100 @@ class SyncronController extends Controller
     }
 
     public function syncData(){
-        $username = User::pluck('username')->all();
-        $nis = Siswa::pluck('nis')->all();
-
         $response = Http::post($this->serverUrl . "sync/get-data", [
-            'key' => $this->key,
-            'username' => $username,
-            'nis' => $nis
+            'key' => $this->key
         ]);
 
         $syncUser = [];
         $syncSiswa = [];
         if ($response->status() == 200){
             $result = json_decode($response->body(), true);
-            foreach ($result['newUser'] as  $newUser){
-                $insUser = User::create([
-                    'kode_instansi' => $newUser['kode_instansi'],
-                    'email' => $newUser['email'],
-                    'username' => $newUser['username'],
-                    'pin' => $newUser['pin'],
-                    'qr_code' => $newUser['qr_code'],
-                    'email_verified_at' => $newUser['email_verified_at'],
-                    'password' => $newUser['password'],
-                    'role' => $newUser['role'],
-                    'route' => $newUser['route'],
-                    'remember_token' => $newUser['remember_token'],
-                    'status_user' => $newUser['status_user'],
-                    'user_join' => $newUser['user_join'],
-                    'name_table_join' => $newUser['name_table_join'],
-                    'saldo' => $newUser['saldo'],
-                    'foto' => $newUser['foto']
-                ]);
-                array_push($syncUser, $insUser);
-            }
-            foreach ($result['allUser'] as $val){
-                $updateUser = User::where('username', $val['username'])->first();
-                $updateUser->kode_instansi = $val['kode_instansi'];
-                $updateUser->email = $val['email'];
-                $updateUser->username = $val['username'];
-                $updateUser->pin = $val['pin'];
-                $updateUser->qr_code = $val['qr_code'];
-                $updateUser->email_verified_at = $val['email_verified_at'];
-                $updateUser->password = $val['password'];
-                $updateUser->role = $val['role'];
-                $updateUser->route = $val['route'];
-                $updateUser->remember_token = $val['kode_instansi'];
-                $updateUser->status_user = $val['status_user'];
-                $updateUser->user_join = $val['user_join'];
-                $updateUser->name_table_join = $val['name_table_join'];
-                $updateUser->saldo = $val['saldo'];
-                $updateUser->foto = $val['foto'];
-
-                if($updateUser->isDirty()){
-                    $updateUser->save();
-                    array_push($syncUser, $updateUser);
+            foreach ($result['user'] as  $newUser){
+                $user = User::where('username', $newUser['username'])->first();
+                if($user){
+                    $user->id = $newUser['id'];
+                    $user->kode_instansi = $newUser['kode_instansi'];
+                    $user->email = $newUser['email'];
+                    $user->username = $newUser['username'];
+                    $user->pin = $newUser['pin'];
+                    $user->qr_code = $newUser['qr_code'];
+                    $user->email_verified_at = $newUser['email_verified_at'];
+                    $user->password = $newUser['password'];
+                    $user->role = $newUser['role'];
+                    $user->route = $newUser['route'];
+                    $user->remember_token = $newUser['kode_instansi'];
+                    $user->status_user = $newUser['status_user'];
+                    $user->user_join = $newUser['user_join'];
+                    $user->name_table_join = $newUser['name_table_join'];
+                    $user->saldo = $newUser['saldo'];
+                    $user->foto = $newUser['foto'];
+                    if($user->isDirty()){
+                        $user->save();
+                        array_push($syncUser, $user);
+                    }
+                }
+                else{
+                    $insUser = User::create([
+                        'id' => $newUser['id'],
+                        'kode_instansi' => $newUser['kode_instansi'],
+                        'email' => $newUser['email'],
+                        'username' => $newUser['username'],
+                        'pin' => $newUser['pin'],
+                        'qr_code' => $newUser['qr_code'],
+                        'email_verified_at' => $newUser['email_verified_at'],
+                        'password' => $newUser['password'],
+                        'role' => $newUser['role'],
+                        'route' => $newUser['route'],
+                        'remember_token' => $newUser['remember_token'],
+                        'status_user' => $newUser['status_user'],
+                        'user_join' => $newUser['user_join'],
+                        'name_table_join' => $newUser['name_table_join'],
+                        'saldo' => $newUser['saldo'],
+                        'foto' => $newUser['foto']
+                    ]);
+                    array_push($syncUser, $insUser);
                 }
             }
-            foreach ($result['newSiswa'] as  $newSiswa){
-                $insSiswa = Siswa::create([
-                    'nis' => $newSiswa['nis'],
-                    'kode_instansi' => $newSiswa['kode_instansi'],
-                    'id_user' => $newSiswa['id_user'],
-                    'nama_siswa' => $newSiswa['nama_siswa'],
-                    'jk' => $newSiswa['jk'],
-                    'tgl_lahir' => $newSiswa['tgl_lahir'],
-                    'alamat' => $newSiswa['alamat'],
-                    'provinsi' => $newSiswa['provinsi'],
-                    'kabupaten' => $newSiswa['kabupaten'],
-                    'kecamatan' => $newSiswa['kecamatan'],
-                    'agama' => $newSiswa['agama'],
-                    'tahun_masuk' => $newSiswa['tahun_masuk'],
-                    'kelas' => $newSiswa['kelas'],
-                ]);
-                array_push($syncSiswa, $insSiswa);
-            }
-            foreach ($result['allSiswa'] as $v){
-                $updateSiswa = Siswa::where('nis', $v['nis'])->first();
-                $updateSiswa->nis = $v['nis'];
-                $updateSiswa->kode_instansi = $v['kode_instansi'];
-                $updateSiswa->id_user = $v['id_user'];
-                $updateSiswa->nama_siswa = $v['nama_siswa'];
-                $updateSiswa->jk = $v['jk'];
-                $updateSiswa->tgl_lahir = $v['tgl_lahir'];
-                $updateSiswa->alamat = $v['alamat'];
-                $updateSiswa->provinsi = $v['provinsi'];
-                $updateSiswa->kabupaten = $v['kabupaten'];
-                $updateSiswa->kecamatan = $v['kecamatan'];
-                $updateSiswa->agama = $v['agama'];
-                $updateSiswa->tahun_masuk = $v['tahun_masuk'];
-                $updateSiswa->kelas = $v['kelas'];
+            
+            foreach ($result['siswa'] as  $newSiswa){
+                $siswa = Siswa::where('nis', $newSiswa['nis'])->first();
+                if($siswa){
+                    $siswa->nis = $newSiswa['nis'];
+                    $siswa->kode_instansi = $newSiswa['kode_instansi'];
+                    $siswa->id_user = $newSiswa['id_user'];
+                    $siswa->nama_siswa = $newSiswa['nama_siswa'];
+                    $siswa->jk = $newSiswa['jk'];
+                    $siswa->tgl_lahir = $newSiswa['tgl_lahir'];
+                    $siswa->alamat = $newSiswa['alamat'];
+                    $siswa->provinsi = $newSiswa['provinsi'];
+                    $siswa->kabupaten = $newSiswa['kabupaten'];
+                    $siswa->kecamatan = $newSiswa['kecamatan'];
+                    $siswa->agama = $newSiswa['agama'];
+                    $siswa->tahun_masuk = $newSiswa['tahun_masuk'];
+                    $siswa->kelas = $newSiswa['kelas'];
 
-                if($updateSiswa->isDirty()){
-                    $updateSiswa->save();
-                    array_push($syncSiswa, $updateSiswa);
+                    if($siswa->isDirty()){
+                        $siswa->save();
+                        array_push($syncSiswa, $siswa);
+                    }
+                }
+                else{
+                    $insSiswa = Siswa::create([
+                        'nis' => $newSiswa['nis'],
+                        'kode_instansi' => $newSiswa['kode_instansi'],
+                        'id_user' => $newSiswa['id_user'],
+                        'nama_siswa' => $newSiswa['nama_siswa'],
+                        'jk' => $newSiswa['jk'],
+                        'tgl_lahir' => $newSiswa['tgl_lahir'],
+                        'alamat' => $newSiswa['alamat'],
+                        'provinsi' => $newSiswa['provinsi'],
+                        'kabupaten' => $newSiswa['kabupaten'],
+                        'kecamatan' => $newSiswa['kecamatan'],
+                        'agama' => $newSiswa['agama'],
+                        'tahun_masuk' => $newSiswa['tahun_masuk'],
+                        'kelas' => $newSiswa['kelas'],
+                    ]);
+                    array_push($syncSiswa, $insSiswa);
                 }
             }
         }

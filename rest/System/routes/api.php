@@ -91,6 +91,7 @@ Route::group([
 
 ], function ($router) {
     Route::get('/absensi', [App\Http\Controllers\SyncronController::class, 'syncronus']);
+    Route::get('/data', [App\Http\Controllers\SyncronController::class, 'syncData']);
 });
 
 Route::get('/test', function(){

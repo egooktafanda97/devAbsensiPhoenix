@@ -126,6 +126,7 @@ class SyncronController extends Controller
             }
             foreach ($result['allSiswa'] as $v){
                 $updateSiswa = Siswa::where('nis', $v['nis'])->first();
+                $updateSiswa->nis = $v['nis'];
                 $updateSiswa->kode_instansi = $v['kode_instansi'];
                 $updateSiswa->id_user = $v['id_user'];
                 $updateSiswa->nama_siswa = $v['nama_siswa'];

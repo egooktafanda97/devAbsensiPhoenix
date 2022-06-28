@@ -27,6 +27,7 @@ class Siswa extends Model
     ];
 
     protected $primaryKey = 'nis';
+    public $incrementing = false;
     
     public function absensi()
     {

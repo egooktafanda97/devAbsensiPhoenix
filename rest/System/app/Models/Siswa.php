@@ -11,6 +11,7 @@ class Siswa extends Model
 
     protected $table = 'tbl_siswa';
     protected $fillable = [
+        'nis',
         'kode_instansi',
         'id_user',
         'nama_siswa',
@@ -24,6 +25,8 @@ class Siswa extends Model
         'tahun_masuk',
         'kelas'
     ];
+
+    protected $primaryKey = 'nis';
     
     public function absensi()
     {

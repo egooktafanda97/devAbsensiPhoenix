@@ -50,20 +50,20 @@ class SyncronController extends Controller
     }
 
     public function syncData(){
-        $user = User::pluck('username')->all();
-        $siswa = Siswa::pluck('nis')->all();
+        $username = User::pluck('username')->all();
+        $nis = Siswa::pluck('nis')->all();
 
         $response = Http::post($this->serverUrl . "sync/get-data", [
             'key' => $this->key,
-            'user' => $user,
-            'siswa' => $siswa
+            'username' => $username,
+            'nis' => $nis
         ]);
 
         $syncUser = [];
         $syncSiswa = [];
         if ($response->status() == 200){
             $result = json_decode($response->body(), true);
-            foreach ($result['user'] as  $newUser){
+            foreach ($result['newUser'] as  $newUser){
                 $insUser = User::create([
                     'kode_instansi' => $newUser['kode_instansi'],
                     'email' => $newUser['email'],
@@ -83,7 +83,30 @@ class SyncronController extends Controller
                 ]);
                 array_push($syncUser, $insUser);
             }
-            foreach ($result['siswa'] as  $newSiswa){
+            foreach ($result['allUser'] as $val){
+                $updateUser = User::where('username', $val['username'])->first();
+                $updateUser->kode_instansi = $val['kode_instansi'];
+                $updateUser->email = $val['email'];
+                $updateUser->username = $val['username'];
+                $updateUser->pin = $val['pin'];
+                $updateUser->qr_code = $val['qr_code'];
+                $updateUser->email_verified_at = $val['email_verified_at'];
+                $updateUser->password = $val['password'];
+                $updateUser->role = $val['role'];
+                $updateUser->route = $val['route'];
+                $updateUser->remember_token = $val['kode_instansi'];
+                $updateUser->status_user = $val['status_user'];
+                $updateUser->user_join = $val['user_join'];
+                $updateUser->name_table_join = $val['name_table_join'];
+                $updateUser->saldo = $val['saldo'];
+                $updateUser->foto = $val['foto'];
+
+                if($updateUser->isDirty()){
+                    $updateUser->save();
+                    array_push($syncUser, $updateUser);
+                }
+            }
+            foreach ($result['newSiswa'] as  $newSiswa){
                 $insSiswa = Siswa::create([
                     'nis' => $newSiswa['nis'],
                     'kode_instansi' => $newSiswa['kode_instansi'],
@@ -100,6 +123,26 @@ class SyncronController extends Controller
                     'kelas' => $newSiswa['kelas'],
                 ]);
                 array_push($syncSiswa, $insSiswa);
+            }
+            foreach ($result['allSiswa'] as $v){
+                $updateSiswa = Siswa::where('nis', $v['nis'])->first();
+                $updateSiswa->kode_instansi = $v['kode_instansi'];
+                $updateSiswa->id_user = $v['id_user'];
+                $updateSiswa->nama_siswa = $v['nama_siswa'];
+                $updateSiswa->jk = $v['jk'];
+                $updateSiswa->tgl_lahir = $v['tgl_lahir'];
+                $updateSiswa->alamat = $v['alamat'];
+                $updateSiswa->provinsi = $v['provinsi'];
+                $updateSiswa->kabupaten = $v['kabupaten'];
+                $updateSiswa->kecamatan = $v['kecamatan'];
+                $updateSiswa->agama = $v['agama'];
+                $updateSiswa->tahun_masuk = $v['tahun_masuk'];
+                $updateSiswa->kelas = $v['kelas'];
+
+                if($updateSiswa->isDirty()){
+                    $updateSiswa->save();
+                    array_push($syncSiswa, $updateSiswa);
+                }
             }
         }
         return response()->json(["user" => $syncUser, "siswa" => $syncSiswa], 200);

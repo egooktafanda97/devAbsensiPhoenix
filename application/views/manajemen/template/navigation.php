@@ -62,6 +62,75 @@
     }
 </script>
 
+<script type="text/javascript">
+
+    function syncData(){
+        console.log('ok');
+        $('.loading-overlay').addClass('is-active');
+        
+        //non-aktif 1st.
+        
+        // function getTidakHadirToday() {
+        //   const save = async (str) => {
+        //         const posts = await axios.get('<?= api_url(); ?>sync/data', {
+        //             headers: {
+        //                 'Authorization': 'Bearer ' + sessionStorage.getItem('_token')
+        //             }
+        //         }).catch((err) => {
+        //             Toastify({
+        //               text: "Sinkronisasi gagal! Mohon ulang kembali",
+        //               duration: 3000,
+        //               close :true,
+        //               gravity:"bottom",
+        //               position:"left",
+        //               className: "errorMessage",
+                      
+        //             }).showToast();
+        //             $('.loading-overlay').removeClass('is-active');
+        //         });
+                
+        //         let tidakHadirCount = 0;
+                
+        //         if (posts.status == 200) {
+                    
+        //             $('.loading-overlay').removeClass('is-active');
+                    
+                    
+        //             Toastify({
+        //               text: "Sinkronisasi selesai!",
+        //               duration: 3000,
+        //               close :true,
+        //               gravity:"bottom",
+        //               position:"left",
+        //               className: "successMessage",
+                      
+        //             }).showToast();
+                    
+        //         } else {
+        //             Toastify({
+        //               text: "Sinkronisasi gagal! Mohon ulang kembali",
+        //               duration: 3000,
+        //               close :true,
+        //               gravity:"bottom",
+        //               position:"left",
+        //               className: "errorMessage",
+                      
+        //             }).showToast();
+        //             $('.loading-overlay').removeClass('is-active');
+        //         }
+        //     }
+    
+        //     save();
+        // }
+        
+    }
+</script>
+
+
+<div class="loading-overlay">
+  <span class="fas fa-spinner fa-3x fa-spin"></span>
+</div>
+
 <body id="page-top">
     <div class="loading">Loading&#8230;</div>
     <div id="toast">
@@ -136,10 +205,16 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('Manajemen'); ?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Monitoring Absen</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('Manajemen/manual'); ?>">
+                    <i class="las la-edit"></i>
+                    <span>Entry Manual</span></a>
             </li>
 
             <!-- Divider -->
@@ -157,7 +232,7 @@
             </li>
             
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('Manajemen/sinkronisasi'); ?>">
+                <a class="nav-link" href="#/" onclick="syncData();">
                     <i class="las la-sync"></i>
                     <span>Sinkronisasi</span></a>
             </li>

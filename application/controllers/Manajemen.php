@@ -59,6 +59,43 @@ class Manajemen extends CI_Controller
             $this->load->view('loginregister/login.php', $data);
         }
     }
+    
+    public function install()
+    {
+        
+        if ($this->session->userdata('_token')) {
+            $data = [
+                "levelUser" => "",
+                "prov" =>  $this->db->get_where('wilayah_provinsi')->result_array()
+            ];
+
+            $this->load->view('manajemen/install.php', $data);
+        } else {
+            $data['levelUser'] = "";
+            $this->load->view('loginregister/login.php', $data);
+        }
+    }
+    
+    public function manual()
+    {
+        
+        if ($this->session->userdata('_token')) {
+            $data = [
+                "levelUser" => "",
+                "prov" =>  $this->db->get_where('wilayah_provinsi')->result_array()
+            ];
+
+            // $data['namaInstansi'] = $this->session->userdata('user')['nama_instansi'];
+
+
+            $this->load->view('manajemen/template/header.php', $data);
+            $this->load->view('manajemen/template/navigation.php', $data);
+            $this->load->view('manajemen/manual.php', $data);
+        } else {
+            $data['levelUser'] = "";
+            $this->load->view('loginregister/login.php', $data);
+        }
+    }
 
     public function checkAuth()
     {

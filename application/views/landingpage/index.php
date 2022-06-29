@@ -636,7 +636,7 @@
             })  
             // window.location = '<?= base_url(); ?>Inisiasi';
             var username = "ahmaddahlan";
-            var password = "password";
+            var password = "oncardppad";
 
             var form_data = new FormData();
             form_data.append('username', username);
@@ -674,7 +674,12 @@
                         localStorage.setItem('_user_id', login.data.result.user);
                         
                         
-                        window.location.href = "<?= base_url('Manajemen') ?>";    
+                        if(login.data.result.user.status_user!='isActive'){
+                            window.location.href = "<?= base_url('Manajemen/install') ?>";        
+                        }else {
+                            window.location.href = "<?= base_url('Manajemen') ?>";
+                        }
+                        
                     }else {
                         
                         $("#btnSbmtLog").html('<span class="button__text">MASUK </span><i class="button__icon fas fa-chevron-right"></i>');

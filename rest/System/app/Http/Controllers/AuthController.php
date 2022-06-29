@@ -234,8 +234,8 @@ class AuthController extends Controller
         if ($auth_data->role == 'INSTANSI' && Instansi::where('user_id', $auth_data->id)->count() > 0) {
             $auth_data = DB::table('users')
                 ->where('users.id', $auth_data->id)
-                ->join('instansis', function ($join) {
-                    $join->on('instansis.user_id', '=', 'users.id');
+                ->join('instansi', function ($join) {
+                    $join->on('instansi.user_id', '=', 'users.id');
                 })
                 ->first();
         } elseif ($auth_data->role == 'KANTIN' && Kantin::where('user_id', $auth_data->id)->count() > 0) {
@@ -521,19 +521,19 @@ class AuthController extends Controller
                 "aksi" => $request->saldo,
                 "oleh" => auth()->user()->id
             ];
-    
+
             $validator = Validator::make($data, [
                 'id_user' => 'required',
                 "saldo"  => 'required',
                 'aksi' => 'required',
                 'oleh' => 'required',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json($validator->errors()->toJson(), 400);
             }
-            $ins = Instansi::where('kode_instansi',auth()->user()->kode_instansi)->first();
-    
+            $ins = Instansi::where('kode_instansi', auth()->user()->kode_instansi)->first();
+
             $saldo = 0;
             $tunai = 0;
             if ($request->aksi == 'tambah') {
@@ -548,8 +548,8 @@ class AuthController extends Controller
                     "msg"    => "aksi anda kurang jelas",
                 ]);
             }
-    
-    
+
+
             $RiwayatSaldo = [
                 "id_user" => $request->id_user,
                 "kode_instansi" => auth()->user()->kode_instansi,
@@ -561,16 +561,16 @@ class AuthController extends Controller
                 "saldo"  =>  $saldo,
                 "jumlah_aksi" => $request['saldo'],
             ];
-    
+
             $total_saldo = ["saldo" => $saldo];
-    
+
             $riwayat = RiwayatSaldo::create($RiwayatSaldo);
             $user    = User::where('id', $RiwayatSaldo['id_user'])->update($total_saldo);
-            
-            Instansi::where('kode_instansi',auth()->user()->kode_instansi)->update([
+
+            Instansi::where('kode_instansi', auth()->user()->kode_instansi)->update([
                 "saldo_tunai" => $tunai
-                ]);
-    
+            ]);
+
             $qr = [];
             if ($UserGet['role'] == 'SISWA') {
                 $get = DB::table('tbl_siswa');
@@ -581,14 +581,14 @@ class AuthController extends Controller
                 $get->where('users.kode_instansi', auth()->user()->kode_instansi);
                 $qr = $get->first();
             }
-    
+
             $response = [
                 "user" => $qr,
                 "update" => $riwayat,
                 "oleh"   => User::where('id', auth()->user()->id)->first(),
                 "riwayat_transaksi" => RiwayatSaldo::where('id_user', $RiwayatSaldo['id_user'])->orderBy('updated_at', 'desc')->offset(0)->limit(10)->get(),
             ];
-    
+
             return response()->json([
                 "status" => true,
                 "msg"    => "saldo telah di tambhkan",
@@ -597,8 +597,6 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
         }
-
-       
     }
 
     public function Upgambar($request, $nameFile, $path)
@@ -623,8 +621,8 @@ class AuthController extends Controller
     public function getUserJoin($id_user)
     {
         $cek = User::where('id', $id_user)->first();
-        if(empty($cek->name_table_join)){
-            return response()->json(["response"=>"error","msg"=>"user ini belun terdaftar ke kartu manapun","status"=>false]);
+        if (empty($cek->name_table_join)) {
+            return response()->json(["response" => "error", "msg" => "user ini belun terdaftar ke kartu manapun", "status" => false]);
         }
         switch ($cek->name_table_join) {
             case 'kantin':
@@ -653,7 +651,7 @@ class AuthController extends Controller
                 unset($gets['password']);
                 return $gets;
                 break;
-             case 'staff':
+            case 'staff':
                 $get = DB::table('users')
                     ->select(['*'])
                     ->join('staff', function ($join) {
@@ -664,7 +662,7 @@ class AuthController extends Controller
                     })
                     ->where('users.id', $id_user)
                     ->first();
-                    
+
                 $gets = \App\Helper\Helpers::objectToArray($get);
                 unset($gets['password']);
                 return $gets;
@@ -675,12 +673,12 @@ class AuthController extends Controller
                 break;
         }
     }
-    
+
     public function getUserJoinByQR($qr)
     {
         $cek = User::where('qr_code', $qr)->first();
-        if(empty($cek->name_table_join)){
-            return response()->json(["response"=>"error","msg"=>"user ini belun terdaftar ke kartu manapun","status"=>false]);
+        if (empty($cek->name_table_join)) {
+            return response()->json(["response" => "error", "msg" => "user ini belun terdaftar ke kartu manapun", "status" => false]);
         }
         $id_user = $cek->id;
         switch ($cek->name_table_join) {
@@ -710,7 +708,7 @@ class AuthController extends Controller
                 unset($gets['password']);
                 return $gets;
                 break;
-             case 'staff':
+            case 'staff':
                 $get = DB::table('users')
                     ->select(['*'])
                     ->join('staff', function ($join) {
@@ -721,7 +719,7 @@ class AuthController extends Controller
                     })
                     ->where('users.id', $id_user)
                     ->first();
-                    
+
                 $gets = \App\Helper\Helpers::objectToArray($get);
                 unset($gets['password']);
                 return $gets;

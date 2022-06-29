@@ -23,21 +23,17 @@ class Inisiasi extends CI_Controller
 
     public function index()
     {
-        
-        if($this->session->userdata('_token')){
+
+        if ($this->session->userdata('_token')) {
             $data = [
                 "levelUser" => "",
                 "prov" =>  $this->db->get_where('wilayah_provinsi')->result_array()
             ];
-            
-            
+
             $this->load->view('inisiasi/index.php', $data);
-            
-        }else {
+        } else {
             $data['levelUser'] = "";
             $this->load->view('loginregister/login.php', $data);
         }
-
-        
     }
 }

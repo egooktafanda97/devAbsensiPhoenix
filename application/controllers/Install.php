@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Landingpage extends CI_Controller
+class Install extends CI_Controller
 {
     function __construct()
     {
@@ -21,12 +21,6 @@ class Landingpage extends CI_Controller
     }
     public function index()
     {
-        $cek = $this->db->get("instansi")->row_array();
-        if (!$cek) {
-            redirect('Install');
-        }
-        $this->load->view('landingpage/index.php');
-
-        // $this->load->view('index');
+        $this->load->view('install/index');
     }
 }

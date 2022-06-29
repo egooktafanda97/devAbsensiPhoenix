@@ -8,6 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
+// call the class relation
+use App\Models\Absensi;
+use App\Models\Instansi;
+use App\Models\Siswa;
+use App\Models\Staff;
 
 
 class User extends Authenticatable implements JWTSubject
@@ -19,6 +24,8 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array
      */
+    // primary
+    protected $primaryKey = 'id';
     protected $fillable = [
         'id',
         'kode_instansi',
@@ -79,15 +86,24 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function absensi(){
+    public function absensi()
+    {
         return $this->hasOne(Absensi::class);
     }
 
-    public function siswa(){
+    // join staff
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
+    public function siswa()
+    {
         return $this->hasOne(Siswa::class, 'id_user');
     }
 
-    public function instansi(){
+    public function instansi()
+    {
         return $this->hasOne(Instansi::class);
     }
 }

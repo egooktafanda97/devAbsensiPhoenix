@@ -19,9 +19,9 @@
             
             <hr/>
             
-            <div style="display:grid; grid-template-columns:repeat(6,1fr);">
+            <div style="display:grid; grid-template-columns:repeat(6,1fr); align-items:center; justify-content:center; gap:10px;">
                 <div style="grid-column:1/span 5;">
-                    <button type="button" class="btn btn-lg btn-outline-success" style="display:block; width:100%; border-radius:0px; margin-bottom:2vh; font-size:2vh!important;">
+                    <button type="button" class="btn btn-lg btn-outline-success" style="display:block; width:100%; border-radius:0px; margin-bottom:2vh; font-size:1.5vh!important; cursor:text;" id="textHariSelected">
                         Hari ini.
                     </button>
                 </div>
@@ -50,38 +50,46 @@
             <div style="display:grid; grid-template-columns:repeat(5,1fr);width:100%; margin-bottom:2vh; border-bottom:1px solid #eee;align-items:center; gap:1.5vh;">
                 <div style="grid-column:1;font-weight:800; background:green; padding:5px; color:#fff;text-align:center;">[H]</div>
                 <div style="grid-column:2/span 3">Hadir</div>
-                <div style="">0</div>
+                <div style="" id="absenHadir">0</div>
             </div>
             
             <div style="display:grid; grid-template-columns:repeat(5,1fr);width:100%; margin-bottom:2vh; border-bottom:1px solid #eee;align-items:center; gap:1.5vh;">
                 <div style="grid-column:1;font-weight:800; background:red; padding:5px; color:#fff;text-align:center;">[S]</div>
                 <div style="grid-column:2/span 3">Sakit</div>
-                <div style="">0</div>
+                <div style="" id="absenSakit">0</div>
             </div>
             
             <div style="display:grid; grid-template-columns:repeat(5,1fr);width:100%; margin-bottom:2vh; border-bottom:1px solid #eee;align-items:center; gap:1.5vh;">
                 <div style="grid-column:1;font-weight:800; background:orange; padding:5px; color:#fff;text-align:center;">[I]</div>
                 <div style="grid-column:2/span 3">Izin</div>
-                <div style="">0</div>
+                <div style="" id="absenIzin">0</div>
             </div>
             
             <div style="display:grid; grid-template-columns:repeat(5,1fr);width:100%; margin-bottom:2vh; border-bottom:1px solid #eee;align-items:center; gap:1.5vh;">
                 <div style="grid-column:1;font-weight:800; background:grey; padding:5px; color:#fff;text-align:center;">[A]</div>
                 <div style="grid-column:2/span 3">Alfa</div>
-                <div style="">0</div>
+                <div style="" id="absenAlfa">0</div>
             </div>
             
         </div>
         <div style="display:block;grid-column:2/span 5; padding:1vh;">
             
-            <div id="putKategoriHere" style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-bottom:3vh;">
-                
+            
+            <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:25px;">
+                <div class="classify onclick" style="cursor:default;border:none; text-align:right;">
+                        Filter :
+                    </div>
+                <div id="putKategoriHere" style="display:grid; grid-template-columns:repeat(6,1fr); gap:0px;grid-column:2/span 5; margin-bottom:3vh;">
+                    
+                </div>    
             </div>
+            
+            
             
             
             <div class="listKonten" style="font-weight:800;">
                 <div>No.</div>
-                <div style="grid-column:2/span 2;">Waktu</div>
+                <div style="grid-column:2/span 2;margin-left:0vh;">Waktu</div>
                 <div style="grid-column:4/span 1;">NIS</div>
                 <div style="grid-column:5/span 3;">Nama</div>
                 <div style="grid-column:9/span 2;">Status</div>
@@ -169,6 +177,13 @@
     let saldoSiswaGuruKantin = 0;
     let saldoTetap = 0;
     
+    let arrayKategori = [];
+    
+    let countHadir = 0;
+    let countSakit = 0;
+    let countIzin = 0;
+    let countAlfa = 0;
+    
     
     let defaultGetData = '';
     //get date today
@@ -178,13 +193,23 @@
    getDataToday(defaultGetData,tanggalSet);
    function getDataToday(str, date) {
        
+       
+             countHadir = 0;
+             countSakit = 0;
+             countIzin = 0;
+             countAlfa = 0;
+       
+       if(str==''){
+            arrayKategori=[];
+        }
+       
        $('#putContentHere').html('<div class="text-center"><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
        let html ='';
        let no = 1;
             
             var form_data = new FormData(); 
             form_data.append('tanggal', tanggalSet); 
-            form_data.append('id_pengaturan', str); 
+            form_data.append('keterangan', str); 
             
             const save = async (str) => {
                 const posts = await axios.post('<?= api_url(); ?>absensi/get-by-date',form_data, {
@@ -195,21 +220,34 @@
                     
                 });
                 
+                
+                
                 if (posts.status == 200) {
                     
                     let hadirTodayCount = 0;
                     
+                    
+                    
                     if(!isEmpty(posts.data.response)){
                     posts.data.response.map((mapping,i)=>{
                         
+                        arrayKategori.push(mapping.keterangan);
+                        
                         if ((mapping.keterangan.indexOf('Masuk') > -1) || (mapping.keterangan.indexOf('masuk') > -1)) {
                           hadirTodayCount++;
+                          countHadir++;
+                        }else if ((mapping.keterangan.indexOf('Izin') > -1) || (mapping.keterangan.indexOf('izin') > -1)) {
+                          countIzin++;
+                        }else if ((mapping.keterangan.indexOf('Sakit') > -1) || (mapping.keterangan.indexOf('sakit') > -1)) {
+                          countSakit++;
+                        }else if ((mapping.keterangan.indexOf('Alfa') > -1) || (mapping.keterangan.indexOf('alfa') > -1)) {
+                          countAlfa++;
                         }
                         
                         html +=`
                             <div class="listKontenView">
                                 <div>${no++}</div>
-                                <div style="grid-column:2/span 2;">${moment(mapping.created_at).format('Do MMMM YYYY, H:mm:ss') + ' WIB'}</div>
+                                <div style="grid-column:2/span 2; margin-left:0vh;">${moment(mapping.created_at).format('Do MMMM YYYY, H:mm:ss') + ' WIB'}</div>
                                 <div style="grid-column:4/span 1;">${mapping.siswa.nis}</div>
                                 <div style="grid-column:5/span 3;">${mapping.siswa.nama_siswa}</div>
                                 <div style="grid-column:9/span 2;">
@@ -219,15 +257,48 @@
                         `;
                         
                     });
-                    
-                    
                     }
                     else {
                         html = `<div class="listKontenView"><div style="grid-column:1/span 10; text-align:left; padding:10px; background:red; color:#fff;">Tidak ada data</div></div>`;
+                        
+                        
                     }
-                    
                     $('#putContentHere').html(html);
                     $('#hadirToday').html(parseInt(hadirTodayCount));
+                    
+                    
+                    //set kategori here
+                    let htmlKategori = '';
+                    
+                    htmlKategori =`
+                    <div class="classify onclick" onclick="getDataToday('','${tanggalSet}')">
+                        Semua
+                    </div>`;
+                    
+                    
+                    let uniqueChars = arrayKategori.filter((c, index) => {
+                        return arrayKategori.indexOf(c) === index;
+                    });
+                    
+                    for (var i = 0; i < uniqueChars.length ; i++) {
+                        
+                        
+                        htmlKategori +=`
+                            <div class="classify onclick" onclick="getDataToday('${uniqueChars[i]}','${tanggalSet}')">
+                                ${uniqueChars[i]}
+                            </div>  
+                        `;
+                      
+                        
+                    }
+                      
+
+                    $('#putKategoriHere').html(htmlKategori);
+                    $('#absenHadir').html(countHadir);
+                    $('#absenSakit').html(countSakit);
+                    $('#absenIzin').html(countIzin);
+                    $('#absenAlfa').html(countAlfa);
+                    
                     
                 } else {
                     
@@ -240,64 +311,12 @@
     }
     
     
-   getKategori();
-   function getKategori() {
-       
-        $('#putKategoriHere').html('<div class="text-center"><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>');
-        let html ='';
-       
-       let setHari = moment(tanggalSet).format('dddd');
-       console.log(setHari);
-       
-        var form_data = new FormData(); 
-        form_data.append('hari', setHari); 
-            
-        const save = async (str) => {
-            const posts = await axios.post('<?= api_url(); ?>pengaturan-instansi/get-by-day',form_data, {
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('_token')
-                }
-            }).catch((err) => {
-
-            });
-            
-            if (posts.status == 200) {
-                
-                html =`
-                <div class="classify onclick" style="cursor:default;border:none; text-align:right;">
-                    Filter :
-                </div>
-                <div class="classify onclick" onclick="getDataToday('','${tanggalSet}')">
-                    Semua
-                </div>  
-                        `;
-                
-                if(!isEmpty(posts.data.response)){
-                posts.data.response.map((mapping,i)=>{
-                    
-                    html +=`
-                        <div class="classify onclick" onclick="getDataToday('${mapping.id}','${tanggalSet}')">
-                            ${mapping.keterangan}
-                        </div>  
-                    `;
-                    
-                });
-                
-                
-                }
-                else {
-                    html = `<div style="grid-column:1/span 6; text-align:left; padding:10px; background:red; color:#fff;">Tidak ada kategori</div>`;
-                }
-                
-                $('#putKategoriHere').html(html);
-                
-            } else {
-                
-            }
-        }
-
-        save();
-    }
+    $(".classify").click(function () {
+        $(".classify").removeClass("activeClassify");
+        // $(".tab").addClass("active"); // instead of this do the below 
+        $(this).addClass("activeClassify");   
+    });
+    
     
     getTidakHadirToday();
    function getTidakHadirToday() {
@@ -342,7 +361,6 @@
     
     function reloadAPI(){
         getDataToday('', tanggalSet);
-        getKategori();
         getTidakHadirToday();
     }
     
@@ -413,8 +431,8 @@
     			//set a referencable dateTime
     			const dateTime = new Date(year, month, dayOfMonthDisplay);
     			dayBox.setAttribute('data-datetime', dateTime);
-    			dayBox.setAttribute('onclick', 'setTanggal("'+dateTime+'");');
     			dayBox.classList.add(DAYS[dateTime.getDay()]);
+    			dayBox.setAttribute('onclick', 'setTanggal("'+dateTime+'");');
     			
     			let dayStroke2;
     			//is rect passed in today?
@@ -553,8 +571,11 @@
     $(".loading").hide();
     
     function setTanggal(str){
+        
         let tglParsed = moment(str).format('YYYY-MM-Do');
         console.log(tglParsed);
+        
+        $('#textHariSelected').text(moment(str).format('dddd, Do-MM-YYYY'));
         
         tanggalSet = tglParsed;
         

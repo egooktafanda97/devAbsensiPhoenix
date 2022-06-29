@@ -10,8 +10,10 @@ use Illuminate\Support\Str;
 
 class PengaturanInstansiController extends Controller
 {
+    private $role = "";
     public function __construct()
     {
+        $this->role = "STAFF";
         $this->middleware('auth:api', ['except' => []]);
     }
     public function store(Request $request)
@@ -53,7 +55,7 @@ class PengaturanInstansiController extends Controller
             "keterangan" => "required|string",
             "time_start" => "required|date_format:H:i",
             "time_end" => "required|date_format:H:i",
-            "role" => "required|string"
+            // "role" => "required|string"
         ]);
 
         if ($validator->fails()) {
@@ -67,7 +69,7 @@ class PengaturanInstansiController extends Controller
                 'keterangan' => $request->keterangan,
                 'time_start' => $request->time_start,
                 'time_end' => $request->time_end,
-                'role' => $request->role
+                'role' => $this->role
             ]);
             return response()->json(["status" => true, "response" => $rule, "msg" => "data berhasil di update"], 200);
         } catch (Exception $e) {

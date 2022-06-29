@@ -1,4 +1,7 @@
 <?php
+
+use function Ramsey\Uuid\v1;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Login extends CI_Controller
@@ -20,21 +23,24 @@ class Login extends CI_Controller
 
     public function index()
     {
-
-
-
-        if ($this->session->userdata('adminSession')) {
-            $data['errormsg'] = "";
-
-            redirect('Welcome/index', 'refresh', $data);
-        } elseif ($this->session->userdata('userSession')) {
-            $data['errormsg'] = "";
-
-            redirect('Welcome/index', 'refresh', $data);
+        // cek inisiasi 
+        $cek = $this->db->get("instansi")->row_array();
+        if (!$cek) {
+            redirect('Install');
         } else {
+            if ($this->session->userdata('adminSession')) {
+                $data['errormsg'] = "";
 
-            $data['errormsg'] = "";
-            $this->load->view('loginregister/login', $data);
+                redirect('Welcome/index', 'refresh', $data);
+            } elseif ($this->session->userdata('userSession')) {
+                $data['errormsg'] = "";
+
+                redirect('Welcome/index', 'refresh', $data);
+            } else {
+
+                $data['errormsg'] = "";
+                $this->load->view('loginregister/login', $data);
+            }
         }
     }
 
@@ -156,7 +162,7 @@ class Login extends CI_Controller
 
     function logoutUser()
     {
-        
+
         $this->session->unset_userdata('adminSession');
         $this->session->unset_userdata('userSession');
         $this->session->unset_userdata('loginedShoppers');
@@ -224,6 +230,5 @@ class Login extends CI_Controller
     }
     public function cek()
     {
-        var_dump(engine);
     }
 }

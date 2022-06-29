@@ -10,6 +10,7 @@ class Instansi extends Model
     use HasFactory;
 
     protected $table = 'instansi';
+    protected $primaryKey = 'kode_instansi';
     protected $fillable = [
         'kode_instansi',
         'user_id',
@@ -38,6 +39,6 @@ class Instansi extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class);
     }
 }

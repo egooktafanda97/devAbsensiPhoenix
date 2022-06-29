@@ -166,6 +166,47 @@ class SyncronController extends Controller
         if ($response->status() == 200){
             $data = json_decode($response->body(), true);
             foreach($data['instansi'] as $instansi){
+                $addInstansi = new Instansi;
+                $addInstansi->kode_instansi = $instansi['kode_instansi'];
+                $addInstansi->user_id = $instansi['user_id'];
+                $addInstansi->user_pimpinan = $instansi['user_pimpinan'];
+                $addInstansi->nama_instansi = $instansi['nama_instansi'];
+                $addInstansi->email_instansi = $instansi['email_instansi'];
+                $addInstansi->alamat = $instansi['alamat'];
+                $addInstansi->provinsi = $instansi['provinsi'];
+                $addInstansi->kabupaten = $instansi['kabupaten'];
+                $addInstansi->kecamatan = $instansi['kecamatan'];
+                $addInstansi->about = $instansi['about'];
+                $addInstansi->visi = $instansi['visi'];
+                $addInstansi->misi = $instansi['kode_instansi'];
+                $addInstansi->frame_koordinat = $instansi['frame_koordinat'];
+                $addInstansi->image = $instansi['image'];
+                $addInstansi->video = $instansi['video'];
+                $addInstansi->galery = $instansi['galery'];
+                $addInstansi->package_module = $instansi['package_module'];
+                $addInstansi->saldo_tunai = $instansi['saldo_tunai'];
+                $addInstansi->saldo_bank = $instansi['saldo_bank'];
+                $addInstansi->saldo_payment = $instansi['saldo_payment'];
+                $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
+                $addInstansi->save();
+                
+                $addUser = new User;
+                $addUser->id = $instansi['user']['id'];
+                $addUser->kode_instansi = $instansi['user']['kode_instansi'];
+                $addUser->email = $instansi['user']['email'];
+                $addUser->username = $instansi['user']['username'];
+                $addUser->pin = $instansi['user']['pin'];
+                $addUser->qr_code = $instansi['user']['qr_code'];
+                $addUser->password = $instansi['user']['password'];
+                $addUser->role = $instansi['user']['role'];
+                $addUser->route = $instansi['user']['route'];
+                $addUser->remember_token = $instansi['user']['remember_token'];
+                $addUser->status_user = $instansi['user']['status_user'];
+                $addUser->user_join = $instansi['user']['user_join'];
+                $addUser->name_table_join = $instansi['user']['name_table_join'];
+                $addUser->saldo = $instansi['user']['saldo'];
+                $addUser->foto = $instansi['user']['foto'];
+                $addUser->save();
                 array_push($result, $instansi);
             }
             foreach($data['siswa'] as $siswa){

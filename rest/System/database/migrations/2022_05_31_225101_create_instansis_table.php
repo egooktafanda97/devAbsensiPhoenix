@@ -14,7 +14,7 @@ class CreateInstansisTable extends Migration
     public function up()
     {
         Schema::create('instansis', function (Blueprint $table) {
-            $table->string('kode_instansi');
+            $table->string('kode_instansi')->unique();
             $table->foreignId('user_id');
             $table->foreignId('user_pimpinan')->nullable();
             $table->string('nama_instansi');

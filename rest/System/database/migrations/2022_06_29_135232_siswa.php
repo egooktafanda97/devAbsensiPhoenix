@@ -25,7 +25,7 @@ class Siswa extends Migration
             $table->string('kabupaten');
             $table->string('kecamatan');
             $table->string('agama', 10);
-            $table->date('tahun_masuk');
+            $table->year('tahun_masuk');
             $table->string('kelas');
             $table->timestamps();
         });

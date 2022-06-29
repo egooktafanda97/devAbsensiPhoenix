@@ -21,6 +21,7 @@ class PengaturanInstansiController extends Controller
             "keterangan" => "required|string",
             "time_start" => "required|date_format:H:i",
             "time_end" => "required|date_format:H:i",
+            "role" => "required|string"
         ]);
 
         if ($validator->fails()) {
@@ -34,8 +35,10 @@ class PengaturanInstansiController extends Controller
                 'keterangan' => $request->keterangan,
                 'time_start' => $request->time_start,
                 'time_end' => $request->time_end,
-                "tanggal" => date("Y-m-d"),
-                'session_id' => Str::random(40)
+                'tanggal' => date("Y-m-d"),
+                'session_id' => Str::random(40),
+                'role' => $request->role
+
             ]);
             return response()->json(["status" => true, "response" => $rule, "msg" => "data berhasil di input"], 200);
         } catch (Exception $e) {
@@ -50,6 +53,7 @@ class PengaturanInstansiController extends Controller
             "keterangan" => "required|string",
             "time_start" => "required|date_format:H:i",
             "time_end" => "required|date_format:H:i",
+            "role" => "required|string"
         ]);
 
         if ($validator->fails()) {
@@ -63,7 +67,7 @@ class PengaturanInstansiController extends Controller
                 'keterangan' => $request->keterangan,
                 'time_start' => $request->time_start,
                 'time_end' => $request->time_end,
-                'tanggal' => date("Y-m-d")
+                'role' => $request->role
             ]);
             return response()->json(["status" => true, "response" => $rule, "msg" => "data berhasil di update"], 200);
         } catch (Exception $e) {
@@ -71,15 +75,15 @@ class PengaturanInstansiController extends Controller
         }
     }
 
-    // public function getAll()
-    // {
-    //     try {
-    //         $rule = PengaturanInstansi::all()->sortBy('id');
-    //         return response()->json(["status" => true, "response" => $rule, "msg" => "Succes Get Data"], 200);
-    //     } catch (Exception $e) {
-    //         return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
-    //     }
-    // }
+    public function getAll()
+    {
+        try {
+            $rule = PengaturanInstansi::all()->sortBy('id');
+            return response()->json(["status" => true, "response" => $rule, "msg" => "Succes Get Data"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
+        }
+    }
 
     public function getAllByInstansi()
     {

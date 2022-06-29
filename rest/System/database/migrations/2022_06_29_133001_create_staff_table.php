@@ -14,9 +14,10 @@ class CreateStaffTable extends Migration
     public function up()
     {
         Schema::create('staff', function (Blueprint $table) {
-            $table->bigIncrements('id_staf');
+            $table->bigIncrements('id_staff');
             $table->bigInteger('id_user');
             $table->string('kode_instansi', 30);
+            $table->string('nik');
             $table->string('nama_lengkap');
             $table->string('nip');
             $table->string('tmp_lahir');
@@ -33,7 +34,7 @@ class CreateStaffTable extends Migration
             $table->string('status_pns');
             $table->string('status_staff');
             $table->string('table_relation', 30);
-            $table->bigInteger('id_relation', 20);
+            $table->bigInteger('id_relation');
             $table->timestamps();
         });
     }

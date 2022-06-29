@@ -19,6 +19,7 @@ class PengaturanInstansi extends Model
         'time_end',
         'tanggal',
         'sync',
+        'role'
     ];
 
     protected $attributes = [

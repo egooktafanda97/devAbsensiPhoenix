@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\{Absensi, User, PengaturanInstansi, Hari, Instansi, Siswa};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Validator;
 
 // bikin random
 use Illuminate\Support\Str;
@@ -50,7 +51,7 @@ class SyncronController extends Controller
     }
 
     public function syncData(){
-        $response = Http::post($this->serverUrl . "sync/get-data", [
+        $response = Http::post($this->serverUrl . "sync/syncron-data", [
             'key' => $this->key
         ]);
 
@@ -148,5 +149,33 @@ class SyncronController extends Controller
             }
         }
         return response()->json(["user" => $syncUser, "siswa" => $syncSiswa], 200);
+    }
+
+    public function importdata(Request $request){
+        $req = $request->all();
+
+        $validator = Validator::make($req, [
+            "secret" => "required|string"
+        ]);
+
+        $response = Http::post($this->serverUrl . "sync/import-data", [
+            'secret' => $req['secret']
+        ]);
+
+        $result = [];
+        if ($response->status() == 200){
+            $data = json_decode($response->body(), true);
+            foreach($data['instansi'] as $instansi){
+                array_push($result, $instansi);
+            }
+            foreach($data['siswa'] as $siswa){
+                array_push($result, $siswa);
+            }
+            foreach($data['staff'] as $staff){
+                array_push($result, $staff);
+            }
+        }
+
+        return response()->json(["status" => true, "response" => $result, "msg" => "data berhasil di import"], 200);
     }
 }

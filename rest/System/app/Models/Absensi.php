@@ -21,7 +21,8 @@ class Absensi extends Model
         'waktu',
         'keterangan',
         'tanggal',
-        'sync'
+        'sync',
+        'role'
     ];
 
     protected $attributes = [

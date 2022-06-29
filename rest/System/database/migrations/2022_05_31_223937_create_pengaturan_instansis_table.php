@@ -20,6 +20,9 @@ class CreatePengaturanInstansisTable extends Migration
             $table->string('keterangan');
             $table->time('time_start');
             $table->time('time_end');
+            $table->date('tanggal');
+            $table->boolean('sync');
+            $table->string('role');
             $table->timestamps();
         });
     }

@@ -20,6 +20,9 @@ class CreateAbsensisTable extends Migration
             $table->foreignId('pengaturan_instansi_id');
             $table->time('waktu')->nullable();
             $table->string('keterangan')->nullable();
+            $table->date('tanggal');
+            $table->boolean('sync');
+            $table->string('role');
             $table->timestamps();
         });
     }

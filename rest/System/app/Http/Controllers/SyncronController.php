@@ -168,7 +168,6 @@ class SyncronController extends Controller
         $resultSiswa = [];
         $resultStaff = [];
         $user = [];
-        return $response->status();
         if ($response->status() == 200){
             $data = json_decode($response->body(), true);
             foreach($data['instansi'] as $instansi){

@@ -170,7 +170,8 @@ class SyncronController extends Controller
         $user = [];
         if ($response->status() == 200){
             $data = json_decode($response->body(), true);
-            foreach($data['instansi'] as $instansi){
+                $instansi = $data['instansi'];
+                // instansi
                 $addInstansi = new Instansi;
                 $addInstansi->kode_instansi = $instansi['kode_instansi'];
                 $addInstansi->user_id = $instansi['user_id'];
@@ -194,7 +195,7 @@ class SyncronController extends Controller
                 $addInstansi->saldo_payment = $instansi['saldo_payment'];
                 $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
                 $addInstansi->save();
-                array_push($resultInstansi, $addInstansi);
+                // user instasi
                 $addUser = new User;
                 $addUser->id = $instansi['user']['id'];
                 $addUser->kode_instansi = $instansi['user']['kode_instansi'];
@@ -212,8 +213,6 @@ class SyncronController extends Controller
                 $addUser->saldo = $instansi['user']['saldo'];
                 $addUser->foto = $instansi['user']['foto'];
                 $addUser->save();
-                array_push($user, $addUser);
-            }
             foreach($data['siswa'] as $siswa){
                 $addSiswa = new Siswa;
                 $addSiswa->nis = $siswa['nis'];

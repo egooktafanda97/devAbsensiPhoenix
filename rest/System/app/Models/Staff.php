@@ -32,6 +32,8 @@ class Staff extends Model
         "table_relation",
         "id_relation"
     ];
+
+    protected $primaryKey = 'id_staff';
     // join user
     public function absensi()
     {

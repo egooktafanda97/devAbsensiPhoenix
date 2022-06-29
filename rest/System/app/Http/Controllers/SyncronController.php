@@ -21,7 +21,9 @@ class SyncronController extends Controller
     {
         $instansi = Instansi::first();
         $this->serverUrl = env('SERVER_URL');
-        $this->key = $instansi->lisensi;
+        if($instansi){
+            $this->key = $instansi->lisensi;
+        }
     }
 
     public function syncronus()
@@ -162,34 +164,38 @@ class SyncronController extends Controller
             'secret' => $req['secret']
         ]);
 
-        $result = [];
+        $resultInstansi = [];
+        $resultSiswa = [];
+        $resultStaff = [];
+        $user = [];
+        return $response->status();
         if ($response->status() == 200){
             $data = json_decode($response->body(), true);
             foreach($data['instansi'] as $instansi){
-                $addInstansi = new Instansi;
-                $addInstansi->kode_instansi = $instansi['kode_instansi'];
-                $addInstansi->user_id = $instansi['user_id'];
-                $addInstansi->user_pimpinan = $instansi['user_pimpinan'];
-                $addInstansi->nama_instansi = $instansi['nama_instansi'];
-                $addInstansi->email_instansi = $instansi['email_instansi'];
-                $addInstansi->alamat = $instansi['alamat'];
-                $addInstansi->provinsi = $instansi['provinsi'];
-                $addInstansi->kabupaten = $instansi['kabupaten'];
-                $addInstansi->kecamatan = $instansi['kecamatan'];
-                $addInstansi->about = $instansi['about'];
-                $addInstansi->visi = $instansi['visi'];
-                $addInstansi->misi = $instansi['kode_instansi'];
-                $addInstansi->frame_koordinat = $instansi['frame_koordinat'];
-                $addInstansi->image = $instansi['image'];
-                $addInstansi->video = $instansi['video'];
-                $addInstansi->galery = $instansi['galery'];
-                $addInstansi->package_module = $instansi['package_module'];
-                $addInstansi->saldo_tunai = $instansi['saldo_tunai'];
-                $addInstansi->saldo_bank = $instansi['saldo_bank'];
-                $addInstansi->saldo_payment = $instansi['saldo_payment'];
-                $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
-                $addInstansi->save();
-                
+                // $addInstansi = new Instansi;
+                // $addInstansi->kode_instansi = $instansi['kode_instansi'];
+                // $addInstansi->user_id = $instansi['user_id'];
+                // $addInstansi->user_pimpinan = $instansi['user_pimpinan'];
+                // $addInstansi->nama_instansi = $instansi['nama_instansi'];
+                // $addInstansi->email_instansi = $instansi['email_instansi'];
+                // $addInstansi->alamat = $instansi['alamat'];
+                // $addInstansi->provinsi = $instansi['provinsi'];
+                // $addInstansi->kabupaten = $instansi['kabupaten'];
+                // $addInstansi->kecamatan = $instansi['kecamatan'];
+                // $addInstansi->about = $instansi['about'];
+                // $addInstansi->visi = $instansi['visi'];
+                // $addInstansi->misi = $instansi['kode_instansi'];
+                // $addInstansi->frame_koordinat = $instansi['frame_koordinat'];
+                // $addInstansi->image = $instansi['image'];
+                // $addInstansi->video = $instansi['video'];
+                // $addInstansi->galery = $instansi['galery'];
+                // $addInstansi->package_module = $instansi['package_module'];
+                // $addInstansi->saldo_tunai = $instansi['saldo_tunai'];
+                // $addInstansi->saldo_bank = $instansi['saldo_bank'];
+                // $addInstansi->saldo_payment = $instansi['saldo_payment'];
+                // $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
+                // $addInstansi->save();
+                // array_push($resultInstansi, $addInstansi);
                 $addUser = new User;
                 $addUser->id = $instansi['user']['id'];
                 $addUser->kode_instansi = $instansi['user']['kode_instansi'];
@@ -207,16 +213,89 @@ class SyncronController extends Controller
                 $addUser->saldo = $instansi['user']['saldo'];
                 $addUser->foto = $instansi['user']['foto'];
                 $addUser->save();
-                array_push($result, $instansi);
+                array_push($user, $addUser);
             }
             foreach($data['siswa'] as $siswa){
-                array_push($result, $siswa);
+                $addSiswa = new Siswa;
+                $addSiswa->nis = $siswa['nis'];
+                $addSiswa->kode_instansi = $siswa['kode_instansi'];
+                $addSiswa->id_user = $siswa['id_user'];
+                $addSiswa->nama_siswa = $siswa['nama_siswa'];
+                $addSiswa->jk = $siswa['jk'];
+                $addSiswa->tgl_lahir = $siswa['tgl_lahir'];
+                $addSiswa->alamat = $siswa['alamat'];
+                $addSiswa->provinsi = $siswa['provinsi'];
+                $addSiswa->kabupaten = $siswa['kabupaten'];
+                $addSiswa->kecamatan = $siswa['kecamatan'];
+                $addSiswa->agama = $siswa['agama'];
+                $addSiswa->tahun_masuk = $siswa['tahun_masuk'];
+                $addSiswa->kelas = $siswa['kelas'];
+                $addSiswa->save();
+                array_push($resultSiswa, $addSiswa);
+                $addUser = new User;
+                $addUser->id = $siswa['user']['id'];
+                $addUser->kode_instansi = $siswa['user']['kode_instansi'];
+                $addUser->email = $siswa['user']['email'];
+                $addUser->username = $siswa['user']['username'];
+                $addUser->pin = $siswa['user']['pin'];
+                $addUser->qr_code = $siswa['user']['qr_code'];
+                $addUser->password = $siswa['user']['password'];
+                $addUser->role = $siswa['user']['role'];
+                $addUser->route = $siswa['user']['route'];
+                $addUser->remember_token = $siswa['user']['remember_token'];
+                $addUser->status_user = $siswa['user']['status_user'];
+                $addUser->user_join = $siswa['user']['user_join'];
+                $addUser->name_table_join = $siswa['user']['name_table_join'];
+                $addUser->saldo = $siswa['user']['saldo'];
+                $addUser->foto = $siswa['user']['foto'];
+                $addUser->save();
+                array_push($user, $addUser);
             }
             foreach($data['staff'] as $staff){
-                array_push($result, $staff);
+                $addStaff = new Staff;
+                $addStaff->id_user = $staff['id_user'];
+                $addStaff->nik = $staff['nik'];
+                $addStaff->kode_instansi = $staff['kode_instansi'];
+                $addStaff->nama_lengkap = $staff['nama_lengkap'];
+                $addStaff->nip = $staff['nip'];
+                $addStaff->temp_lahir = $staff['temp_lahir'];
+                $addStaff->tgl_lahir = $staff['tgl_lahir'];
+                $addStaff->jenis_kelamin = $staff['jenis_kelamin'];
+                $addStaff->agama = $staff['agama'];
+                $addStaff->alamat_rumah = $staff['alamat_rumah'];
+                $addStaff->telepon = $staff['telepon'];
+                $addStaff->id_jabatan = $staff['id_jabatan'];
+                $addStaff->tgl_masuk = $staff['tgl_masuk'];
+                $addStaff->unit_konsentrasi = $staff['unit_konsentrasi'];
+                $addStaff->status_guru = $staff['status_guru'];
+                $addStaff->status_mengajar = $staff['status_mengajar'];
+                $addStaff->status_pns = $staff['status_pns'];
+                $addStaff->status_staff = $staff['status_staff'];
+                $addStaff->table_relation = $staff['table_relation'];
+                $addStaff->id_relation = $staff['id_relation'];
+                $addStaff->save();
+                array_push($resultStaff, $addStaff);
+                $addUser = new User;
+                $addUser->id = $staff['user']['id'];
+                $addUser->kode_instansi = $staff['user']['kode_instansi'];
+                $addUser->email = $staff['user']['email'];
+                $addUser->username = $staff['user']['username'];
+                $addUser->pin = $staff['user']['pin'];
+                $addUser->qr_code = $staff['user']['qr_code'];
+                $addUser->password = $staff['user']['password'];
+                $addUser->role = $staff['user']['role'];
+                $addUser->route = $staff['user']['route'];
+                $addUser->remember_token = $staff['user']['remember_token'];
+                $addUser->status_user = $staff['user']['status_user'];
+                $addUser->user_join = $staff['user']['user_join'];
+                $addUser->name_table_join = $staff['user']['name_table_join'];
+                $addUser->saldo = $staff['user']['saldo'];
+                $addUser->foto = $staff['user']['foto'];
+                $addUser->save();
+                array_push($user, $addUser);
             }
         }
 
-        return response()->json(["status" => true, "response" => $result, "msg" => "data berhasil di import"], 200);
+        return response()->json(["status" => true, "response" => ["Instansi" => $resultInstansi, "Siswa" => $resultSiswa, "Staff" => $resultStaff, "User" => $user], "msg" => "data berhasil di import"], 200);
     }
 }

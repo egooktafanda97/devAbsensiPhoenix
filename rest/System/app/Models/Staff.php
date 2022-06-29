@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Staff extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = 'id_staff';
     protected $table = "staff";
     protected $fillable = [
         'id_user',
@@ -32,8 +32,6 @@ class Staff extends Model
         "table_relation",
         "id_relation"
     ];
-
-    protected $primaryKey = 'id_staff';
     // join user
     public function absensi()
     {

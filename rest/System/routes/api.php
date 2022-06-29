@@ -92,9 +92,9 @@ Route::group([
 ], function ($router) {
     Route::get('/absensi', [App\Http\Controllers\SyncronController::class, 'syncronus']);
     Route::get('/data', [App\Http\Controllers\SyncronController::class, 'syncData']);
-    Route::post('/import', [App\Http\Controllers\SyncronController::class, 'importData']);
+    Route::post('/import/{slug}', [App\Http\Controllers\SyncronController::class, 'importData']);
 });
 
-Route::get('/test', function(){
+Route::get('/test', function () {
     echo "ok";
 });

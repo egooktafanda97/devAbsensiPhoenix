@@ -9,7 +9,7 @@ class Instansi extends Model
 {
     use HasFactory;
 
-    protected $table = 'instansis';
+    protected $table = 'instansi';
     protected $fillable = [
         'kode_instansi',
         'user_id',
@@ -31,7 +31,9 @@ class Instansi extends Model
         'saldo_tunai',
         'saldo_bank',
         'saldo_payment',
-        'kas_sekolah'
+        'kas_sekolah',
+        "lisensi",
+        "ip"
     ];
 
     public function user()

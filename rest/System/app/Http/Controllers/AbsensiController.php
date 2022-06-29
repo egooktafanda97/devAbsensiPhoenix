@@ -12,7 +12,8 @@ class AbsensiController extends Controller
 {
     public function absensi(Request $request){
         $validator = Validator::make($request->all(), [
-            "kode" => "required"
+            "kode" => "required",
+            "role" => "required"
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +51,8 @@ class AbsensiController extends Controller
                         'waktu' => $date->toTimeString(),
                         'keterangan' => $rule->keterangan,
                         'session_id' => Str::random(40),
-                        'tanggal' => $date->toDateString()
+                        'tanggal' => $date->toDateString(),
+                        'role' => $request->role
                     ]);
                     return response()->json(["status" => true, "response" => $absensi, "msg" => "Berhasil Melakukan Absensi"], 200);
                 }catch(Exception $e){

@@ -28,12 +28,13 @@ class AbsensiController extends Controller
 
         $user = User::where('qr_code', $request->kode)->first();
         if (empty($user)) {
-            return response()->json(["status" => false, "response" => "", "msg" => "siswa belum terdaftar"], 400);
+            return response()->json(["status" => false, "response" => "", "msg" => "user belum terdaftar"], 400);
         }
         $date = Carbon::now();
         $today = Carbon::parse($date)->dayName;
         $hari = $hari = Hari::where('nama', $today)->first();
         $rule = PengaturanInstansi::where('kode_instansi', $user->kode_instansi)
+            ->where('role', $user->role)
             ->where('id_hari', $hari->id)
             ->where('time_start', '<', $date->toTimeString())
             ->where('time_end', '>', $date->toTimeString())->first();

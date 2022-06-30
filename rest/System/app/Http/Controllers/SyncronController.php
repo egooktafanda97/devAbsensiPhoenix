@@ -22,6 +22,7 @@ class SyncronController extends Controller
     private $key = "";
     public function __construct()
     {
+        $this->middleware('auth:api', ['except' => []]);
         $instansi = Instansi::first();
         $this->serverUrl = env('SERVER_URL');
         if ($instansi) {
@@ -207,11 +208,10 @@ class SyncronController extends Controller
             $addUser->foto = $instansi['user']['foto'];
             // cek ready data
             $checkUser = User::where('id',  $instansi['user']['id'])->first();
-            // jika di temukan maka update data
             if (!empty($checkUser)) {
                 $addUser->update();
             } else {
-                // $addUser->save();
+                $addUser->save();
             }
             $addInstansi = new Instansi();
             $addInstansi->kode_instansi = $instansi['kode_instansi'];
@@ -244,8 +244,8 @@ class SyncronController extends Controller
             } else {
                 $addInstansi->save();
             }
-            return ["status" => true, "response" => $instansi, "msg" => "success to save data"];
             DB::commit();
+            return ["status" => true, "response" => $instansi, "msg" => "success to save data"];
         } catch (\Throwable $e) {
             DB::rollback();
             return ["status" => false, "msg" => "server error", "error" => $e];

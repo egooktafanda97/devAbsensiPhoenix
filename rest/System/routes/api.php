@@ -51,7 +51,8 @@ Route::group([
 ], function ($router) {
     Route::post('/', [AbsensiController::class, 'absensi']);
     Route::get('/get-all', [AbsensiController::class, 'getAll']);
-    Route::get('/get-by-instansi', [AbsensiController::class, 'getByInstansi']);
+    Route::get('/get-by-instansi', [AbsensiController::class, 'getByInstansiRoleSiswa']);
+    Route::get('/staff-get-by-instansi', [AbsensiController::class, 'getByInstansiRoleStaff']);
     Route::post('/get-by-date', [AbsensiController::class, 'getByDate']);
     Route::get('/get-by-id-pengaturan/{id}', [AbsensiController::class, 'getByIdPengaturan']);
 });

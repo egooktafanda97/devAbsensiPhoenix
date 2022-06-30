@@ -10,6 +10,10 @@ use Illuminate\Support\Str;
 
 class AbsensiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
     public function absensi(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -70,10 +74,19 @@ class AbsensiController extends Controller
     //     } 
     // }
 
-    public function getByInstansi()
+    public function getByInstansiRoleSiswa()
     {
         try {
-            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('siswa')->get();
+            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('staff')->get();
+            return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
+        }
+    }
+    public function getByInstansiRoleStaff()
+    {
+        try {
+            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('staff')->get();
             return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
         } catch (Exception $e) {
             return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);

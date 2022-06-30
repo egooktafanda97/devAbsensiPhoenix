@@ -63,6 +63,7 @@ class SyncronController extends Controller
 
         $syncUser = [];
         $syncSiswa = [];
+        $syncStaff = [];
         if ($response->status() == 200) {
             $result = json_decode($response->body(), true);
             foreach ($result['user'] as  $newUser) {
@@ -151,8 +152,65 @@ class SyncronController extends Controller
                     array_push($syncSiswa, $insSiswa);
                 }
             }
+            foreach ($result['staff'] as  $newStaff){
+                $staff = Staff::where('id_staf', $newStaff['id_staf'])->first();
+                if($staff){
+                    $staff->id_staf = $newStaff['id_staf'];
+                    $staff->id_user = $newStaff['id_user'];
+                    $staff->nik = $newStaff['nik'];
+                    $staff->kode_instansi = $newStaff['kode_instansi'];
+                    $staff->nama_lengkap = $newStaff['nama_lengkap'];
+                    $staff->nip = $newStaff['nip'];
+                    $staff->tmp_lahir = $newStaff['tmp_lahir'];
+                    $staff->tgl_lahir = $newStaff['tgl_lahir'];
+                    $staff->jenis_kelamin = $newStaff['jenis_kelamin'];
+                    $staff->agama = $newStaff['agama'];
+                    $staff->alamat_rumah = $newStaff['alamat_rumah'];
+                    $staff->telepon = $newStaff['telepon'];
+                    $staff->id_jabatan = $newStaff['id_jabatan'];
+                    $staff->tgl_masuk = $newStaff['tgl_masuk'];
+                    $staff->unit_konsentrasi = $newStaff['unit_konsentrasi'];
+                    $staff->status_guru = $newStaff['status_guru'];
+                    $staff->status_mengajar = $newStaff['status_mengajar'];
+                    $staff->status_pns = $newStaff['status_pns'];
+                    $staff->status_staff = $newStaff['status_staff'];
+                    $staff->table_relation = $newStaff['table_relation'];
+                    $staff->id_relation = $newStaff['id_relation'];
+                    if($staff->isDirty()){
+                        $staff->save();
+                        array_push($syncStaff, $staff);
+                    }
+                }
+
+                else{
+                    $staff = new Staff;
+                    $staff->id_staf = $newStaff['id_staf'];
+                    $staff->id_user = $newStaff['id_user'];
+                    $staff->nik = $newStaff['nik'];
+                    $staff->kode_instansi = $newStaff['kode_instansi'];
+                    $staff->nama_lengkap = $newStaff['nama_lengkap'];
+                    $staff->nip = $newStaff['nip'];
+                    $staff->tmp_lahir = $newStaff['tmp_lahir'];
+                    $staff->tgl_lahir = $newStaff['tgl_lahir'];
+                    $staff->jenis_kelamin = $newStaff['jenis_kelamin'];
+                    $staff->agama = $newStaff['agama'];
+                    $staff->alamat_rumah = $newStaff['alamat_rumah'];
+                    $staff->telepon = $newStaff['telepon'];
+                    $staff->id_jabatan = $newStaff['id_jabatan'];
+                    $staff->tgl_masuk = $newStaff['tgl_masuk'];
+                    $staff->unit_konsentrasi = $newStaff['unit_konsentrasi'];
+                    $staff->status_guru = $newStaff['status_guru'];
+                    $staff->status_mengajar = $newStaff['status_mengajar'];
+                    $staff->status_pns = $newStaff['status_pns'];
+                    $staff->status_staff = $newStaff['status_staff'];
+                    $staff->table_relation = $newStaff['table_relation'];
+                    $staff->id_relation = $newStaff['id_relation'];
+                    $staff->save();
+                    array_push($syncStaff, $staff);
+                }
+            }
         }
-        return response()->json(["user" => $syncUser, "siswa" => $syncSiswa], 200);
+        return response()->json(["user" => $syncUser, "siswa" => $syncSiswa, "staff" => $syncStaff], 200);
     }
     public function importdata(Request $request, $selected)
     {
@@ -277,7 +335,8 @@ class SyncronController extends Controller
                     $addUser->name_table_join = $siswa['user']['name_table_join'];
                     $addUser->saldo = $siswa['user']['saldo'];
                     $addUser->foto = $siswa['user']['foto'];
-                    if (!empty($checkInstansi)) {
+                    $checkUser = User::where('id',  $siswa['user']['id'])->first();
+                    if (!empty($checkUser)) {
                         $addUser->update();
                     } else {
                         $addUser->save();
@@ -298,7 +357,8 @@ class SyncronController extends Controller
                     $addSiswa->agama = $siswa['agama'];
                     $addSiswa->tahun_masuk = $siswa['tahun_masuk'];
                     $addSiswa->kelas = $siswa['kelas'];
-                    if (!empty($checkInstansi)) {
+                    $checkSiswa = User::where('nis',  $siswa['nis'])->first();
+                    if (!empty($checkSiswa)) {
                         $addSiswa->update();
                     } else {
                         $addSiswa->save();
@@ -340,7 +400,8 @@ class SyncronController extends Controller
                     $addUser->name_table_join = $staff['user']['name_table_join'];
                     $addUser->saldo = $staff['user']['saldo'];
                     $addUser->foto = $staff['user']['foto'];
-                    if (!empty($checkInstansi)) {
+                    $checkUser = User::where('id',  $staff['user']['id'])->first();
+                    if (!empty($checkUser)) {
                         $addUser->update();
                     } else {
                         $addUser->save();
@@ -369,8 +430,8 @@ class SyncronController extends Controller
                     $addStaff->status_staff = $staff['status_staff'];
                     $addStaff->table_relation = $staff['table_relation'];
                     $addStaff->id_relation = $staff['id_relation'];
-
-                    if (!empty($checkInstansi)) {
+                    $checkStaff = User::where('id',  $staff['user']['id'])->first();
+                    if (!empty($checkStaff)) {
                         $addStaff->update();
                     } else {
                         $addStaff->save();

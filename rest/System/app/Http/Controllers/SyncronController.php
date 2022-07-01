@@ -22,7 +22,7 @@ class SyncronController extends Controller
     private $key = "";
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => []]);
+        $this->middleware('auth:api', ['except' => ['importData','importdataInstansi','importdataSiswa']]);
         $instansi = Instansi::first();
         $this->serverUrl = env('SERVER_URL');
         if ($instansi) {
@@ -227,6 +227,9 @@ class SyncronController extends Controller
         if ($response->status() == 200) {
             $data = json_decode($response->body(), true);
             switch ($selected) {
+                case 'check':
+                 return response()->json($data, 200);
+                break;
                 case 'instansi':
                     return response()->json($this->importdataInstansi($data), 200);
                     break;

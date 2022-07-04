@@ -256,7 +256,7 @@ class SyncronController extends Controller
                 "instansi" => $ins,
                 "user" => $us
             ], "msg" => "success to save data"];
-            // DB::commit();
+            // DB::commit();x
         } catch (\Throwable $e) {
             // DB::rollback();
             return ["status" => false, "msg" => "server error", "error" => $e->getMessage()];

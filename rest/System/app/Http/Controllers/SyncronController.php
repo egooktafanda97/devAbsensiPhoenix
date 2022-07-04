@@ -168,6 +168,9 @@ class SyncronController extends Controller
         if ($response->status() == 200) {
             $data = json_decode($response->body(), true);
             switch ($selected) {
+                case 'check':
+                    return response()->json($data, 200);
+                    break;
                 case 'instansi':
                     return response()->json($this->importdataInstansi($data), 200);
                     break;

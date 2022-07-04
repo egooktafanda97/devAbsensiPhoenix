@@ -191,17 +191,20 @@
       font-size:8px!important;
       color:white;
     }
-
+    .imp1,.imp2,.imp3 {
+        margin-right: 20px;
+    }
     .datago {
         width: 20px;
         height: 20px;
         background: url(<?=base_url();?>assets/gif/loading-2.gif);
         background-size: contain;
         background-position: center;
-        margin-right: 20px;
+        background-repeat: no-repeat;
+        padding: 10px;
     }
     
-    #step3 {
+    #step2,#step3 {
         display: none;
     }
     .errorMessage {
@@ -225,11 +228,11 @@
         
         <div class="sider">
             <div class="sidebarKonten" style="border-radius:10px; background:#4ad481;color:#fff; text-align:center; padding:25px;">
-                <div class="nombor activeSider" style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">1</div>
+                <div class="nombor1 activeSider" style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">1</div>
                 <div class="penghubung" style="width:3px;height:50px;border-radius:0px; text-align:center; background:#bfffbb;margin:auto;padding-top:5px;"></div>
-                <div class="nombor " style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">2</div>
+                <div class="nombor2 " style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">2</div>
                 <div class="penghubung" style="width:3px;height:50px;border-radius:0px; text-align:center; background:#bfffbb;margin:auto;padding-top:5px;"></div>
-                <div class="nombor" style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">3</div>
+                <div class="nombor3" style="width:30px;height:30px;border-radius:1000px; text-align:center; background:#61eb7f;margin:auto;padding-top:5px;">3</div>
             </div>
             <div style="grid-column:2/span 6;display:block;">
                 
@@ -248,9 +251,9 @@
                     <h4 style="text-transform:initial;line-height:1vh;">Importing data</h4>
                     <p style="line-height:1.8vh;">Harap menunggu hingga proses import data selesai.</p>
 
-                    <p><span class="imp datago"></span> Mengimport data instansi</p>
-                    <p><font class="imp"></font> Mengimport data siswa</p>
-                    <p><font class="imp"></font> Mengimport data staff & guru</p>
+                    <p class="poin1"><span class="imp1"></span> Mengimport data instansi</p>
+                    <p class="poin2"><font class="imp2"></font> Mengimport data siswa</p>
+                    <p class="poin3"><font class="imp3"></font> Mengimport data staff & guru</p>
 
                     <div style="display:flex; align-items:center;">
                         <div class="progress">
@@ -369,7 +372,7 @@
                     $("#btnSbmtLog").attr('class','btn btn-lg btn-success');
                     $('#btnSbmtLog').prop("disabled", false);
                     $("#btnSbmtLog").attr('style', 'cursor:pointer');
-                    
+
                 });
                 $(".loading").fadeOut();
             if (login.status == 200) {
@@ -392,11 +395,22 @@
                     $("#btnSbmtLog").attr('style', 'cursor:pointer');
 
                     $("#step2").attr("style","display:block!important;");
-                    $(".nombor")[0].removeClass("activeSider");
-                    $(".nombor")[1].addClass("activeSider");
+                    $(".nombor1").removeClass("activeSider");
+                    $(".nombor2").addClass("activeSider");
 
+                    $('.bar').css('width','0%');
+                    $('.percent').text('0%');
 
-                    runFunctionImporting();
+                    
+                    
+                    $(".poin1").css('display','block');
+                    $(".poin2").css('display','none');
+                    $(".poin3").css('display','none');
+
+                    $(".imp1").addClass('datago');
+                    
+
+                    runFunctionImportingInstansi();
                     
                 }else {
                     
@@ -422,8 +436,201 @@
 
     });
 
-    function runFunctionImporting(){
+    function runFunctionImportingInstansi(){
+            var username = $("#putLisensi").val();
+            
+            var form_data = new FormData();
+            form_data.append('secret', username);
+            
+            const ajaxAxiosLogin = async () => {
+                const login = await axios.post("<?=base_url();?>rest/api/sync/import/instansi", form_data).catch((err) => {
+                    // kesalahan login
+                    console.log(err.response.data);
+                    
+                    Toastify({
+                          text: "Proses import gagal! Ulangi kembali...",
+                          duration: 3000,
+                          close :true,
+                          gravity:"bottom",
+                          position:"left",
+                          className: "errorMessage",
+                          
+                        }).showToast();
 
+                    $(".imp1").html("<i class='las la-times text-danger'></i>");
+                    
+                });
+                $(".loading").fadeOut();
+            if (login.status == 200) {
+
+                if(login.data.check_lisensi == true){
+                    // console.log(login.data.result.user);
+                    
+                    $(".poin1").css('display','block');
+                    $(".poin2").css('display','block');
+                    $(".poin3").css('display','none');
+
+                    $(".imp1").removeClass('datago');
+                    $(".imp1").html("<i class='las la-check text-success'></i>");
+                    $(".imp2").addClass('datago');
+
+                    $('.bar').css('width','33%');
+                    $('.percent').text('33%');
+                    
+
+                    runFunctionImportingSiswa();
+                    
+                }else {
+                    
+                    
+                    Toastify({
+                      text: "Proses import gagal! Ulangi kembali...",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"left",
+                      className: "errorMessage",
+                      
+                    }).showToast();
+
+                    $(".imp1").html("<i class='las la-times text-danger'></i>");
+                    $(".imp1").removeClass('datago');
+                    
+                }
+            }
+
+            }
+            ajaxAxiosLogin();
+    }
+
+    function runFunctionImportingSiswa(){
+            var username = $("#putLisensi").val();
+            
+            var form_data = new FormData();
+            form_data.append('secret', username);
+            
+            const ajaxAxiosLogin = async () => {
+                const login = await axios.post("<?=base_url();?>rest/api/sync/import/siswa", form_data).catch((err) => {
+                    // kesalahan login
+                    console.log(err.response.data);
+                    
+                    Toastify({
+                          text: "Proses import gagal! Ulangi kembali...",
+                          duration: 3000,
+                          close :true,
+                          gravity:"bottom",
+                          position:"left",
+                          className: "errorMessage",
+                          
+                        }).showToast();
+                    
+                });
+                $(".loading").fadeOut();
+            if (login.status == 200) {
+
+                if(login.data.check_lisensi == true){
+                    // console.log(login.data.result.user);
+                    
+                    $(".poin1").css('display','block');
+                    $(".poin2").css('display','block');
+                    $(".poin3").css('display','block');
+
+                    $(".imp1").html("<i class='las la-check text-success'></i>");
+                    $(".imp2").removeClass('datago');
+                    $(".imp2").html("<i class='las la-check text-success'></i>");
+                    $(".imp3").addClass('datago');
+
+                    $('.bar').css('width','66%');
+                    $('.percent').text('66%');
+                    
+
+                    runFunctionImportingStaff();
+                    
+                }else {
+                    
+                    
+                    Toastify({
+                      text: "Proses import gagal! Ulangi kembali...",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"left",
+                      className: "errorMessage",
+                      
+                    }).showToast();
+
+                    $(".imp2").html("<i class='las la-times text-danger'></i>");
+                    $(".imp2").removeClass('datago');
+                    
+                }
+            }
+
+            }
+            ajaxAxiosLogin();
+    }
+
+    function runFunctionImportingStaff(){
+            var username = $("#putLisensi").val();
+            
+            var form_data = new FormData();
+            form_data.append('secret', username);
+            
+            const ajaxAxiosLogin = async () => {
+                const login = await axios.post("<?=base_url();?>rest/api/sync/import/staff", form_data).catch((err) => {
+                    // kesalahan login
+                    console.log(err.response.data);
+                    
+                    Toastify({
+                          text: "Proses import gagal! Ulangi kembali...",
+                          duration: 3000,
+                          close :true,
+                          gravity:"bottom",
+                          position:"left",
+                          className: "errorMessage",
+                          
+                        }).showToast();
+                    
+                });
+                $(".loading").fadeOut();
+            if (login.status == 200) {
+
+                if(login.data.check_lisensi == true){
+                    // console.log(login.data.result.user);
+
+                    $(".imp1").html("<i class='las la-check text-success'></i>");
+                    $(".imp2").html("<i class='las la-check text-success'></i>");
+                    $(".imp3").removeClass('datago');
+                    $(".imp3").html("<i class='las la-check text-success'></i>");
+                    
+
+                    $("#step3").attr("style","display:block!important;");
+                    $(".nombor2").removeClass("activeSider");
+                    $(".nombor3").addClass("activeSider");
+
+                    $('.bar').css('width','100%');
+                    $('.percent').text('100%');
+                    
+                }else {
+                    
+                    
+                    Toastify({
+                      text: "Proses import gagal! Ulangi kembali...",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"left",
+                      className: "errorMessage",
+                      
+                    }).showToast();
+
+                    $(".imp3").html("<i class='las la-times text-danger'></i>");
+                    $(".imp3").removeClass('datago');
+                    
+                }
+            }
+
+            }
+            ajaxAxiosLogin();
     }
 
   </script>

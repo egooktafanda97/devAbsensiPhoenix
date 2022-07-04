@@ -187,68 +187,76 @@ class SyncronController extends Controller
     public function importdataInstansi($data)
     {
         try {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             $instansi = $data['instansi'];
-            $addUser = new User();
-            $addUser->id = $instansi['user']['id'];
-            $addUser->kode_instansi = $instansi['user']['kode_instansi'];
-            $addUser->email = $instansi['user']['email'];
-            $addUser->username = $instansi['user']['username'];
-            $addUser->pin = $instansi['user']['pin'];
-            $addUser->qr_code = $instansi['user']['qr_code'];
-            $addUser->password = $instansi['user']['password'];
-            $addUser->role = $instansi['user']['role'];
-            $addUser->route = $instansi['user']['route'];
-            $addUser->remember_token = $instansi['user']['remember_token'];
-            $addUser->status_user = $instansi['user']['status_user'];
-            $addUser->user_join = $instansi['user']['user_join'];
-            $addUser->name_table_join = $instansi['user']['name_table_join'];
-            $addUser->saldo = $instansi['user']['saldo'];
-            $addUser->foto = $instansi['user']['foto'];
-            // cek ready data
-            $checkUser = User::where('id',  $instansi['user']['id'])->first();
-            // jika di temukan maka update data
-            if (!empty($checkUser)) {
-                $addUser->update();
-            } else {
-                // $addUser->save();
+            $us = User::create($instansi['user']);
+            if ($us) {
+                $ins = Instansi::create($instansi);
             }
-            $addInstansi = new Instansi();
-            $addInstansi->kode_instansi = $instansi['kode_instansi'];
-            $addInstansi->user_id =  $instansi['user_id'];
-            $addInstansi->user_pimpinan = $instansi['user_pimpinan'];
-            $addInstansi->nama_instansi = $instansi['nama_instansi'];
-            $addInstansi->email_instansi = $instansi['email_instansi'];
-            $addInstansi->alamat = $instansi['alamat'];
-            $addInstansi->provinsi = $instansi['provinsi'];
-            $addInstansi->kabupaten = $instansi['kabupaten'];
-            $addInstansi->kecamatan = $instansi['kecamatan'];
-            $addInstansi->about = $instansi['about'];
-            $addInstansi->visi = $instansi['visi'];
-            $addInstansi->misi = $instansi['kode_instansi'];
-            $addInstansi->frame_koordinat = $instansi['frame_koordinat'];
-            $addInstansi->image = $instansi['image'];
-            $addInstansi->video = $instansi['video'];
-            $addInstansi->galery = $instansi['galery'];
-            $addInstansi->package_module = $instansi['package_module'];
-            $addInstansi->saldo_tunai = $instansi['saldo_tunai'];
-            $addInstansi->saldo_bank = $instansi['saldo_bank'];
-            $addInstansi->saldo_payment = $instansi['saldo_payment'];
-            $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
-            $addInstansi->lisensi = $instansi['user']['remember_token'];
-            // cek data
-            $checkInstansi = Instansi::where('kode_instansi', $instansi['kode_instansi'])->first();
-            // jika di temukan maka update data
-            if (!empty($checkInstansi)) {
-                $addInstansi->update();
-            } else {
-                $addInstansi->save();
-            }
-            return ["status" => true, "response" => $instansi, "msg" => "success to save data"];
-            DB::commit();
+
+            // $addUser = new User();
+            // $addUser->id = $instansi['user']['id'];
+            // $addUser->kode_instansi = $instansi['user']['kode_instansi'];
+            // $addUser->email = $instansi['user']['email'];
+            // $addUser->username = $instansi['user']['username'];
+            // $addUser->pin = $instansi['user']['pin'];
+            // $addUser->qr_code = $instansi['user']['qr_code'];
+            // $addUser->password = $instansi['user']['password'];
+            // $addUser->role = $instansi['user']['role'];
+            // $addUser->route = $instansi['user']['route'];
+            // $addUser->remember_token = $instansi['user']['remember_token'];
+            // $addUser->status_user = $instansi['user']['status_user'];
+            // $addUser->user_join = $instansi['user']['user_join'];
+            // $addUser->name_table_join = $instansi['user']['name_table_join'];
+            // $addUser->saldo = $instansi['user']['saldo'];
+            // $addUser->foto = $instansi['user']['foto'];
+            // // cek ready data
+            // $checkUser = User::where('id',  $instansi['user']['id'])->first();
+            // // jika di temukan maka update data
+            // if (!empty($checkUser)) {
+            //     $addUser->update();
+            // } else {
+            //     $addUser->save();
+            // }
+            // $addInstansi = new Instansi();
+            // $addInstansi->kode_instansi = $instansi['kode_instansi'];
+            // $addInstansi->user_id =  $instansi['user_id'];
+            // $addInstansi->user_pimpinan = $instansi['user_pimpinan'];
+            // $addInstansi->nama_instansi = $instansi['nama_instansi'];
+            // $addInstansi->email_instansi = $instansi['email_instansi'];
+            // $addInstansi->alamat = $instansi['alamat'];
+            // $addInstansi->provinsi = $instansi['provinsi'];
+            // $addInstansi->kabupaten = $instansi['kabupaten'];
+            // $addInstansi->kecamatan = $instansi['kecamatan'];
+            // $addInstansi->about = $instansi['about'];
+            // $addInstansi->visi = $instansi['visi'];
+            // $addInstansi->misi = $instansi['kode_instansi'];
+            // $addInstansi->frame_koordinat = $instansi['frame_koordinat'];
+            // $addInstansi->image = $instansi['image'];
+            // $addInstansi->video = $instansi['video'];
+            // $addInstansi->galery = $instansi['galery'];
+            // $addInstansi->package_module = $instansi['package_module'];
+            // $addInstansi->saldo_tunai = $instansi['saldo_tunai'];
+            // $addInstansi->saldo_bank = $instansi['saldo_bank'];
+            // $addInstansi->saldo_payment = $instansi['saldo_payment'];
+            // $addInstansi->kas_sekolah = $instansi['kas_sekolah'];
+            // $addInstansi->lisensi = $instansi['user']['remember_token'];
+            // // cek data
+            // $checkInstansi = Instansi::where('kode_instansi', $instansi['kode_instansi'])->first();
+            // // jika di temukan maka update data
+            // if (!empty($checkInstansi)) {
+            //     $addInstansi->update();
+            // } else {
+            //     $addInstansi->save();
+            // }
+            return ["status" => true, "response" => [
+                "instansi" => $ins,
+                "user" => $us
+            ], "msg" => "success to save data"];
+            // DB::commit();
         } catch (\Throwable $e) {
-            DB::rollback();
-            return ["status" => false, "msg" => "server error", "error" => $e];
+            // DB::rollback();
+            return ["status" => false, "msg" => "server error", "error" => $e->getMessage()];
         }
     }
     public function importdataSiswa($data)

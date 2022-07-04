@@ -10,6 +10,10 @@ use Illuminate\Support\Str;
 
 class AbsensiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
     public function absensi(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -24,12 +28,13 @@ class AbsensiController extends Controller
 
         $user = User::where('qr_code', $request->kode)->first();
         if (empty($user)) {
-            return response()->json(["status" => false, "response" => "", "msg" => "siswa belum terdaftar"], 400);
+            return response()->json(["status" => false, "response" => "", "msg" => "user belum terdaftar"], 400);
         }
         $date = Carbon::now();
         $today = Carbon::parse($date)->dayName;
         $hari = $hari = Hari::where('nama', $today)->first();
         $rule = PengaturanInstansi::where('kode_instansi', $user->kode_instansi)
+            ->where('role', $user->role)
             ->where('id_hari', $hari->id)
             ->where('time_start', '<', $date->toTimeString())
             ->where('time_end', '>', $date->toTimeString())->first();
@@ -70,10 +75,19 @@ class AbsensiController extends Controller
     //     } 
     // }
 
-    public function getByInstansi()
+    public function getByInstansiRoleSiswa()
     {
         try {
-            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('siswa')->get();
+            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('staff')->get();
+            return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);
+        }
+    }
+    public function getByInstansiRoleStaff()
+    {
+        try {
+            $absensi = Absensi::where('kode_instansi', auth()->user()->kode_instansi)->with('staff')->get();
             return response()->json(["status" => true, "response" => $absensi, "msg" => "Succes Get Data"], 200);
         } catch (Exception $e) {
             return response()->json(["status" => false, "response" => "error", "msg" => "oops error"], 400);

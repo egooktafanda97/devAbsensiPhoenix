@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\PengaturanInstansi;
 use App\Models\User;
 use App\Models\Siswa;
+use App\Models\Staff;
 
 class Absensi extends Model
 {
@@ -41,5 +42,10 @@ class Absensi extends Model
     public function pengaturanInstansi()
     {
         return $this->belongsTo(PengaturanInstansi::class, 'pengaturan_instansi_id', 'id');
+    }
+    // join staff
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'user_id', 'id_user');
     }
 }

@@ -21,6 +21,7 @@ class Install extends CI_Controller
     }
     public function index()
     {
-        $this->load->view('install/index');
+        // $this->load->view('install/index');
+        $this->load->view('manajemen/install.php');
     }
 }

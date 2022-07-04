@@ -65,7 +65,7 @@
       width:70%;
       height:76vh;
       overflow-y:auto;
-      border-radius:5vh;
+      border-radius:10px;
       padding:5vh;
       background: rgb(59,207,118);
       background: linear-gradient(0deg, rgba(59,207,118,0.48503151260504207) 0%, rgba(189,255,215,0.5158438375350141) 96%);
@@ -119,7 +119,7 @@
       margin:auto;
       z-index:69;
       text-align:center;
-      margin-top:100px;
+      margin-top:20px;
       
   }
   
@@ -192,7 +192,17 @@
       color:white;
     }
     
-    
+    #step2, #step3 {
+        display: none;
+    }
+    .errorMessage {
+            background: rgb(176, 0, 71);
+            background: linear-gradient(180deg, rgba(176, 0, 71, 1) 0%, rgba(131, 32, 32, 1) 100%);
+        }
+
+        .successMessage {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
 
 </style>
 
@@ -202,7 +212,7 @@
     <div class="konten">
         <h1 style="line-height:1.5vh;">Instalasi sistem</h1>
         
-        <h3 style="text-transform:lowercase!important;font-weight:400;">Selamat datang, <span style="border-bottom:3px solid #4ad481;"><?=$this->session->userdata('user')['username'];?></span> !</h3>
+        <h3 style="text-transform:lowercase!important;font-weight:400;">Selamat datang <span style="border-bottom:3px solid #4ad481;"></span></h3>
         
         <div class="sider">
             <div class="sidebarKonten" style="border-radius:10px; background:#4ad481;color:#fff; text-align:center; padding:25px;">
@@ -214,17 +224,17 @@
             </div>
             <div style="grid-column:2/span 6;display:block;">
                 
-                <div style="padding:5px; border-radius:5px; margin-bottom:20px;">
+                <div id="step1" style="padding:5px; border-radius:5px; margin-bottom:20px;">
                     <p style="padding:5px; padding-left:15px; padding-right:15px; border-radius:5px; color:#fff; background:#f78b25;font-size:1.3vh; margin-bottom:20px; display:inline-block;">Step 1 - Lisensi</p>
                     <h4 style="text-transform:initial;line-height:1vh;">Masukkan kode lisensi</h4>
                     <p style="line-height:1.8vh;">10 digit kode lisensi yang diberikan oleh pihak Oncard.id</p>
                     <div style="display:flex; align-items:center;">
-                    <input type="text" class="form-control" style="border-radius:5px; font-size:2vh;padding:14px; letter-spacing:10px;background:#fff; border:2px solid #61eb7f;width:auto; margin-right:10px;" maxlength="10"/>
-                    <button type="button" class="btn btn-lg btn-success"><i class="las la-check" style="line-height:1.8vh;"></i></button>
+                    <input type="text" id="putLisensi" class="form-control" style="border-radius:5px; font-size:2vh;padding:14px; letter-spacing:10px;background:#fff; border:2px solid #61eb7f;width:auto; margin-right:10px;" maxlength="10"/>
+                    <button type="button" class="btn btn-lg btn-success" id="btnSbmtLog"><i class="las la-check" style="line-height:1.8vh;"></i></button>
                     </div>
                 </div>
                 
-                <div style="padding:5px; border-radius:5px; margin-bottom:20px;">
+                <div id="step2" style="padding:5px; border-radius:5px; margin-bottom:20px;">
                     <p style="padding:5px; padding-left:15px; padding-right:15px; border-radius:5px; color:#fff; background:#f78b25;font-size:1.3vh; margin-bottom:20px; display:inline-block;">Step 2 - Import data</p>
                     <h4 style="text-transform:initial;line-height:1vh;">Importing data</h4>
                     <p style="line-height:1.8vh;">Harap menunggu hingga proses import data selesai.</p>
@@ -238,7 +248,7 @@
                 </div>
                 
                 
-                <div style="padding:5px; border-radius:5px; margin-bottom:20px;">
+                <div id="step3" style="padding:5px; border-radius:5px; margin-bottom:20px;">
                     <p style="padding:5px; padding-left:15px; padding-right:15px; border-radius:5px; color:#fff; background:#f78b25;font-size:1.3vh; margin-bottom:20px; display:inline-block;">Step 3 - Selesai</p>
                     <h4 style="text-transform:initial;line-height:1vh;">Congratulations!</h4>
                     <p style="line-height:1.8vh;">Proses instalasi sistem telah berhasil dilakukan.<br/>Silahkan gunakan tombol berikut ini untuk login ke sistem absensi.</p>
@@ -249,13 +259,15 @@
             </div>
         </div>
         
-        <div class="logoutSess">
+        
+        
+    </div>
+
+    <div class="logoutSess">
             <button type="button" class="btn btn-sm btn-danger" onclick="logoutBtn();">
                 <i class="las la-power-off"></i> Batal instalasi
             </button>
         </div>
-        
-    </div>
 
   <!-- initialize jQuery Library -->
   <script src="<?php echo base_url(); ?>/assets_landingpage/plugins/jQuery/jquery.min.js"></script>
@@ -316,89 +328,22 @@
     });
     $('#btnSbmtLog').on('click', function() {
         
-        
-        //validasi formulir terlebih dahulu
-        var allAreFilled = true;
-        document.getElementById("mod").querySelectorAll("[required]").forEach(function(i) {
-            if (!allAreFilled) return;
-            if (!i.value) allAreFilled = false;
-            if (i.type === "radio") {
-                var radioValueCheck = false;
-                document.getElementById("main").querySelectorAll('[name=${i.name}]').forEach(function(r) {
-                    if (r.checked) radioValueCheck = true;
-                })
-                allAreFilled = radioValueCheck;
-            }
-        })
-        if (!allAreFilled) {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Data tidak lengkap',
-                text: 'Username dan password harus diisi',
-                showConfirmButton: true,
-
-            });
-        } else {
+            var username = $("#putLisensi").val();
             
-            let getpin = '';
-            $(".inputPass").each(function(){
-                   getpin += $(this).val();
-            })  
-            // window.location = '<?= base_url(); ?>Inisiasi';
-            var username = "ahmaddahlan";
-            var password = "oncardppad";
-
             var form_data = new FormData();
-            form_data.append('username', username);
-            form_data.append('password', password);
-
-            $("#btnSbmtLog").html('<span class="button__text">Memproses </span><i class="button__icon fas fa-chevron-right"></i>');
+            form_data.append('secret', username);
+            
+            $("#btnSbmtLog").attr('class','btn btn-lg btn-secondary');
             $('#btnSbmtLog').prop("disabled", true);
             $("#btnSbmtLog").attr('style', 'cursor:not-allowed');
 
             const ajaxAxiosLogin = async () => {
-                const login = await axios.post("<?= base_url('Login/LoginActions') ?>", form_data).catch((err) => {
+                const login = await axios.post("<?=base_url();?>rest/api/sync/import/check", form_data).catch((err) => {
                     // kesalahan login
                     console.log(err.response.data);
                     
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Username dan password tidak sesuai',
-                        showConfirmButton: true,
-
-                    });
-                    
-                    $("#btnSbmtLog").html('<span class="button__text">MASUK </span><i class="button__icon fas fa-chevron-right"></i>');
-                    $('#btnSbmtLog').prop("disabled", false);
-                    $("#btnSbmtLog").attr('style', 'cursor:pointer');
-                    
-                });
-                $(".loading").fadeOut();
-                
-                    if(login.data.result.access_token){
-                        // console.log(login.data.result.user);
-                        sessionStorage.setItem('_token', login.data.result.access_token);
-                        localStorage.setItem('_token', login.data.result.access_token);
-                        sessionStorage.setItem('_user_id', login.data.result.user);
-                        localStorage.setItem('_user_id', login.data.result.user);
-                        
-                        
-                        if(login.data.result.user.status_user=='isActive'){
-                            window.location.href = "<?= base_url('Manajemen/install') ?>";        
-                        }else {
-                            window.location.href = "<?= base_url('Manajemen') ?>";
-                        }
-                        
-                    }else {
-                        
-                        $("#btnSbmtLog").html('<span class="button__text">MASUK </span><i class="button__icon fas fa-chevron-right"></i>');
-                        $('#btnSbmtLog').prop("disabled", false);
-                        $("#btnSbmtLog").attr('style', 'cursor:pointer');
-                        
-                        Toastify({
-                          text: "Kombinasi username dan password tidak sesuai",
+                    Toastify({
+                          text: "Kode lisensi tidak valid!",
                           duration: 3000,
                           close :true,
                           gravity:"bottom",
@@ -406,16 +351,53 @@
                           className: "errorMessage",
                           
                         }).showToast();
-                        
-                    }
-                
                     
+                    $("#btnSbmtLog").attr('class','btn btn-lg btn-success');
+                    $('#btnSbmtLog').prop("disabled", false);
+                    $("#btnSbmtLog").attr('style', 'cursor:pointer');
                     
+                });
+                $(".loading").fadeOut();
+            if (login.status == 200) {
+
+                if(login.data.check_lisensi == true){
+                    // console.log(login.data.result.user);
+                    Toastify({
+                      text: "Kode lisensi valid!",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"left",
+                      className: "successMessage",
+                      
+                    }).showToast();
+
+                    $("#putLisensi").attr('disabled','disabled');
+                    $("#btnSbmtLog").attr('class','btn btn-lg btn-secondary');
+                    $('#btnSbmtLog').prop("disabled", true);
+                    $("#btnSbmtLog").attr('style', 'cursor:pointer');
                     
+                }else {
                     
+                    $("#btnSbmtLog").attr('class','btn btn-lg btn-success');
+                    $('#btnSbmtLog').prop("disabled", false);
+                    $("#btnSbmtLog").attr('style', 'cursor:pointer');
+                    
+                    Toastify({
+                      text: "Kode lisensi tidak valid!",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"left",
+                      className: "errorMessage",
+                      
+                    }).showToast();
+                    
+                }
+            }
+
             }
             ajaxAxiosLogin();
-        }
 
     });
 

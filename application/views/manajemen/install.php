@@ -167,7 +167,7 @@
       margin:0px auto;
       padding:0;
       width:100%;
-      height:30px;
+      height:10px;
       overflow:hidden;
       background:#e5e5e5;
       border-radius:6px;
@@ -188,11 +188,20 @@
       transform:translate(-50%,-50%);
       margin:0;
       font-family:tahoma,arial,helvetica;
-      font-size:12px;
+      font-size:8px!important;
       color:white;
     }
+
+    .datago {
+        width: 20px;
+        height: 20px;
+        background: url(<?=base_url();?>assets/gif/loading-2.gif);
+        background-size: contain;
+        background-position: center;
+        margin-right: 20px;
+    }
     
-    #step2, #step3 {
+    #step3 {
         display: none;
     }
     .errorMessage {
@@ -238,6 +247,11 @@
                     <p style="padding:5px; padding-left:15px; padding-right:15px; border-radius:5px; color:#fff; background:#f78b25;font-size:1.3vh; margin-bottom:20px; display:inline-block;">Step 2 - Import data</p>
                     <h4 style="text-transform:initial;line-height:1vh;">Importing data</h4>
                     <p style="line-height:1.8vh;">Harap menunggu hingga proses import data selesai.</p>
+
+                    <p><span class="imp datago"></span> Mengimport data instansi</p>
+                    <p><font class="imp"></font> Mengimport data siswa</p>
+                    <p><font class="imp"></font> Mengimport data staff & guru</p>
+
                     <div style="display:flex; align-items:center;">
                         <div class="progress">
                         	<div class="bar" style="width:100%">
@@ -376,6 +390,13 @@
                     $("#btnSbmtLog").attr('class','btn btn-lg btn-secondary');
                     $('#btnSbmtLog').prop("disabled", true);
                     $("#btnSbmtLog").attr('style', 'cursor:pointer');
+
+                    $("#step2").attr("style","display:block!important;");
+                    $(".nombor")[0].removeClass("activeSider");
+                    $(".nombor")[1].addClass("activeSider");
+
+
+                    runFunctionImporting();
                     
                 }else {
                     
@@ -400,6 +421,10 @@
             ajaxAxiosLogin();
 
     });
+
+    function runFunctionImporting(){
+
+    }
 
   </script>
 

@@ -8,7 +8,7 @@
             
         </div>
         <div style="display:block;grid-column:5/span 2;">
-            <input id="search" type="text" class="form-control" placeholder="Cari nama user..."/>
+            <input id="search" type="text" class="form-control" placeholder="Cari nama user..." style="border-radius:6px;"/>
             <button type="button" class="btn btn-danger" style="position:relative;float:right; margin-top:-48.5px; margin-right:10px; " onclick="runSearch();">
                 Cari
             </button>

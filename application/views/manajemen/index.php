@@ -375,7 +375,7 @@
     		return;
     	}
     	const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-    	const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Julo", "Agustus", "September", "Oktober", "November", "Desember"];
+    	const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     	
     	const month = today.getMonth();
     	const dayOfMonth = today.getDate();

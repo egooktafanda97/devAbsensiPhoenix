@@ -463,7 +463,7 @@
                 $(".loading").fadeOut();
             if (login.status == 200) {
 
-                if(login.data.check_lisensi == true){
+                if(login.data.status == true){
                     // console.log(login.data.result.user);
                     
                     $(".poin1").css('display','block');
@@ -528,7 +528,7 @@
                 $(".loading").fadeOut();
             if (login.status == 200) {
 
-                if(login.data.check_lisensi == true){
+                if(login.data.status == true){
                     // console.log(login.data.result.user);
                     
                     $(".poin1").css('display','block');
@@ -594,7 +594,7 @@
                 $(".loading").fadeOut();
             if (login.status == 200) {
 
-                if(login.data.check_lisensi == true){
+                if(login.data.status == true){
                     // console.log(login.data.result.user);
 
                     $(".imp1").html("<i class='las la-check text-success'></i>");

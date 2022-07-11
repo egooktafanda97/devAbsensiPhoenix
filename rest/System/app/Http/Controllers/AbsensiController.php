@@ -12,7 +12,7 @@ class AbsensiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => []]);
+        $this->middleware('auth:api', ['except' => ['absensi']]);
     }
     public function absensi(Request $request)
     {

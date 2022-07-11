@@ -22,10 +22,10 @@ class SyncronController extends Controller
     private $key = "";
     public function __construct()
     {
-        $instansi = Instansi::first();
+        $instansi = User::where(["id" => auth()->user()->id, "role" => "INSTANSI"])->first();
         $this->serverUrl = env('SERVER_URL');
         if ($instansi) {
-            $this->key = $instansi->lisensi;
+            $this->key = $instansi->remember_token;
         }
     }
 

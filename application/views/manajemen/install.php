@@ -269,7 +269,7 @@
                     <p style="padding:5px; padding-left:15px; padding-right:15px; border-radius:5px; color:#fff; background:#f78b25;font-size:1.3vh; margin-bottom:20px; display:inline-block;">Step 3 - Selesai</p>
                     <h4 style="text-transform:initial;line-height:1vh;">Congratulations!</h4>
                     <p style="line-height:1.8vh;">Proses instalasi sistem telah berhasil dilakukan.<br/>Silahkan gunakan tombol berikut ini untuk login ke sistem absensi.</p>
-                    <button type="button" class="btn btn-success">Login ke sistem absensi sekarang.</button>
+                    <button type="button" class="btn btn-success" onclick="window.location.href='<?=base_url();?>'">Login ke sistem absensi sekarang.</button>
                 </div>
                 
                 

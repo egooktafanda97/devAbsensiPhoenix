@@ -17,7 +17,8 @@
                 <div style="grid-column:3/span 2;">Keterangan</div>
                 <div style="">Waktu Mulai</div>
                 <div style="">Waktu Berakhir</div>
-                <div style="grid-column:7/span 3;text-align:right;">Aksi</div>
+                <div style="">Role</div>
+                <div style="grid-column:8/span 2;text-align:right;">Aksi</div>
                 
             </div>
             
@@ -48,6 +49,12 @@
       </div>
       <div class="modal-body">
           <form id="mod">
+            <label style="padding-left: 20px;">Role</label>
+            <select id="role" class="form-control" style="margin-bottom:1.5vh;">
+                <option value="SISWA">Siswa</option>
+                <option value="STAFF">Staff</option>
+                
+            </select>
             <select id="hari" class="form-control" style="margin-bottom:1.5vh;">
                 <option value="">Pilih hari</option>
                 <option value="1">Senin</option>
@@ -219,7 +226,8 @@
                             <div style="grid-column:3/span 2;">${mapping.keterangan}</div>
                             <div ><font style="border-radius:3px; background:#18ed3f;color:#fff;  padding-left:10px;padding-right:10px; line-height:1.5vh;">${mapping.time_start + ' WIB'}</font></div>
                             <div ><font style="border-radius:3px; background:red;color:#fff; padding-left:10px;padding-right:10px; line-height:1.5vh;">${mapping.time_end + ' WIB'}</font></div>
-                            <div class="" style="grid-column:7/span 3;text-align:right; margin-right:0vh;">
+                            <div >${mapping.role}</div>
+                            <div class="" style="grid-column:8/span 2;text-align:right; margin-right:0vh;">
                                 <button class="btn btn-secondary btn-sm" type="button" onclick="managePengaturan('${mapping.id}');" style="border-radius:0px;"><i class="las la-edit"></i></button>
                                 <button class="btn btn-danger btn-sm" onclick="confirmDelete('${mapping.id}');" type="button" style="border-radius:0px;"><i class="las la-trash"></i></button>
                             </div>
@@ -285,6 +293,7 @@
                     
                     posts.data?.response.map((mapping,i)=>{
                         $("#hari").val(mapping.id_hari);
+                        $("#role").val(mapping.role);
                         $("#keterangan").val(mapping.keterangan);
                         $("#time_start").val(mapping.time_start);
                         $("#time_end").val(mapping.time_end);    
@@ -308,6 +317,7 @@
        $('#btnProc').attr('disabled','disabled');
        $('#btnProc').css('cursor','not-allowed');
         
+        var role = $("#role").val();
         var hari = $("#hari").val();
         var keterangan = $("#keterangan").val();
         var time_start = $("#time_start").val();
@@ -318,6 +328,7 @@
         
         
         var form_data = new FormData();
+        form_data.append('role', role);
         form_data.append('id_hari', hari);
         form_data.append('keterangan', keterangan);
         form_data.append('time_start', timeStartSplitted[0]+':'+timeStartSplitted[1]);

@@ -68,60 +68,57 @@
         console.log('ok');
         $('.loading-overlay').addClass('is-active');
         
-        //non-aktif 1st.
-        
-        // function getTidakHadirToday() {
-        //   const save = async (str) => {
-        //         const posts = await axios.get('<?= api_url(); ?>sync/data', {
-        //             headers: {
-        //                 'Authorization': 'Bearer ' + sessionStorage.getItem('_token')
-        //             }
-        //         }).catch((err) => {
-        //             Toastify({
-        //               text: "Sinkronisasi gagal! Mohon ulang kembali",
-        //               duration: 3000,
-        //               close :true,
-        //               gravity:"bottom",
-        //               position:"left",
-        //               className: "errorMessage",
+          const save = async (str) => {
+                const posts = await axios.get('<?= api_url(); ?>sync/data', {
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('_token')
+                    }
+                }).catch((err) => {
+                    Toastify({
+                      text: "Sinkronisasi gagal! Mohon ulang kembali!",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"right",
+                      className: "errorMessage",
                       
-        //             }).showToast();
-        //             $('.loading-overlay').removeClass('is-active');
-        //         });
+                    }).showToast();
+                    $('.loading-overlay').removeClass('is-active');
+                });
                 
-        //         let tidakHadirCount = 0;
+                let tidakHadirCount = 0;
                 
-        //         if (posts.status == 200) {
+                if (posts.status == 200) {
                     
-        //             $('.loading-overlay').removeClass('is-active');
+                    $('.loading-overlay').removeClass('is-active');
                     
                     
-        //             Toastify({
-        //               text: "Sinkronisasi selesai!",
-        //               duration: 3000,
-        //               close :true,
-        //               gravity:"bottom",
-        //               position:"left",
-        //               className: "successMessage",
+                    Toastify({
+                      text: "Sinkronisasi selesai!",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"right",
+                      className: "successMessage",
                       
-        //             }).showToast();
+                    }).showToast();
                     
-        //         } else {
-        //             Toastify({
-        //               text: "Sinkronisasi gagal! Mohon ulang kembali",
-        //               duration: 3000,
-        //               close :true,
-        //               gravity:"bottom",
-        //               position:"left",
-        //               className: "errorMessage",
+                } else {
+                    Toastify({
+                      text: "Sinkronisasi gagal! Mohon ulang kembali",
+                      duration: 3000,
+                      close :true,
+                      gravity:"bottom",
+                      position:"right",
+                      className: "errorMessage",
                       
-        //             }).showToast();
-        //             $('.loading-overlay').removeClass('is-active');
-        //         }
-        //     }
+                    }).showToast();
+                    $('.loading-overlay').removeClass('is-active');
+                }
+            }
     
-        //     save();
-        // }
+            save();
+        
         
     }
 </script>

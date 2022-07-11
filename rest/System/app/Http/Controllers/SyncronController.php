@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\{Absensi, User, PengaturanInstansi, Hari, Instansi, Siswa};
+use App\Models\{Absensi, User, PengaturanInstansi, Hari, Instansi, Siswa, Staff};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Validator;
-use App\Models\Staff;
 
 // bikin random
 use Illuminate\Support\Str;
@@ -56,12 +55,14 @@ class SyncronController extends Controller
     }
     public function syncData()
     {
+        
         $response = Http::post($this->serverUrl . "sync/syncron-data", [
             'key' => $this->key
         ]);
 
         $syncUser = [];
         $syncSiswa = [];
+        $syncStaff = [];
         if ($response->status() == 200) {
             $result = json_decode($response->body(), true);
             foreach ($result['user'] as  $newUser) {
@@ -150,8 +151,65 @@ class SyncronController extends Controller
                     array_push($syncSiswa, $insSiswa);
                 }
             }
+
+            foreach ($result['staff'] as  $newStaff) {
+                $staff = Staff::where('id_staf', $newStaff['id_staf'])->first();
+                if ($staff) {
+                    $staff->id_staf = $newStaff['id_staf'];
+                    $staff->id_user = $newStaff['id_user'];
+                    $staff->nik = $newStaff['nik'];
+                    $staff->kode_instansi = $newStaff['kode_instansi'];
+                    $staff->nama_lengkap = $newStaff['nama_lengkap'];
+                    $staff->nip = $newStaff['nip'];
+                    $staff->tmp_lahir = $newStaff['tmp_lahir'];
+                    $staff->tgl_lahir = $newStaff['tgl_lahir'];
+                    $staff->jenis_kelamin = $newStaff['jenis_kelamin'];
+                    $staff->agama = $newStaff['agama'];
+                    $staff->alamat_rumah = $newStaff['alamat_rumah'];
+                    $staff->telepon = $newStaff['telepon'];
+                    $staff->id_jabatan = $newStaff['id_jabatan'];
+                    $staff->tgl_masuk = $newStaff['tgl_masuk'];
+                    $staff->unit_konsentrasi = $newStaff['unit_konsentrasi'];
+                    $staff->status_guru = $newStaff['status_guru'];
+                    $staff->status_mengajar = $newStaff['status_mengajar'];
+                    $staff->status_pns = $newStaff['status_pns'];
+                    $staff->status_staff = $newStaff['status_staff'];
+                    $staff->table_relation = $newStaff['table_relation'];
+                    $staff->id_relation = $newStaff['id_relation'];
+
+                    if ($staff->isDirty()) {
+                        $staff->save();
+                        array_push($syncStaff, $staff);
+                    }
+                } else {
+                    $insStaff = new Staff;
+                    $insStaff->id_staf = $newStaff['id_staf'];
+                    $insStaff->id_user = $newStaff['id_user'];
+                    $insStaff->nik = $newStaff['nik'];
+                    $insStaff->kode_instansi = $newStaff['kode_instansi'];
+                    $insStaff->nama_lengkap = $newStaff['nama_lengkap'];
+                    $insStaff->nip = $newStaff['nip'];
+                    $insStaff->tmp_lahir = $newStaff['tmp_lahir'];
+                    $insStaff->tgl_lahir = $newStaff['tgl_lahir'];
+                    $insStaff->jenis_kelamin = $newStaff['jenis_kelamin'];
+                    $insStaff->agama = $newStaff['agama'];
+                    $insStaff->alamat_rumah = $newStaff['alamat_rumah'];
+                    $insStaff->telepon = $newStaff['telepon'];
+                    $insStaff->id_jabatan = $newStaff['id_jabatan'];
+                    $insStaff->tgl_masuk = $newStaff['tgl_masuk'];
+                    $insStaff->unit_konsentrasi = $newStaff['unit_konsentrasi'];
+                    $insStaff->status_guru = $newStaff['status_guru'];
+                    $insStaff->status_mengajar = $newStaff['status_mengajar'];
+                    $insStaff->status_pns = $newStaff['status_pns'];
+                    $insStaff->status_staff = $newStaff['status_staff'];
+                    $insStaff->table_relation = $newStaff['table_relation'];
+                    $insStaff->id_relation = $newStaff['id_relation'];
+                    $staff->save();
+                    array_push($syncStaff, $insStaff);
+                }
+            }
         }
-        return response()->json(["user" => $syncUser, "siswa" => $syncSiswa], 200);
+        return response()->json(["user" => $syncUser, "siswa" => $syncSiswa, "staff" => $syncStaff], 200);
     }
     public function importdata(Request $request, $selected)
     {
@@ -172,7 +230,7 @@ class SyncronController extends Controller
                     return response()->json($data, 200);
                     break;
                 case 'instansi':
-                    return response()->json($this->importdataInstansi($data), 200);
+                    return response()->json($this->importdataInstansi($data,$req['secret']), 200);
                     break;
                 case 'siswa':
                     return response()->json($this->importdataSiswa($data), 200);
@@ -187,14 +245,14 @@ class SyncronController extends Controller
             }
         }
     }
-    public function importdataInstansi($data)
+    public function importdataInstansi($data,$lisen)
     {
         try {
             // DB::beginTransaction();
             $instansi = $data['instansi'];
             $us = User::create($instansi['user']);
             if ($us) {
-                $ins = Instansi::create($instansi);
+                $ins = Instansi::create(array_merge($instansi,["lisensi"=> $lisen]));
             }
 
             // $addUser = new User();

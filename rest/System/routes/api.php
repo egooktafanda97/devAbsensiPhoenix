@@ -96,6 +96,10 @@ Route::group([
     Route::post('/import/{slug}', [App\Http\Controllers\SyncronController::class, 'importData']);
 });
 
+Route::get('sockets/serve', function () {
+    \Illuminate\Support\Facades\Artisan::call('websockets:serve');
+});
+
 Route::get('/test', function () {
     echo "ok";
 });

@@ -21,7 +21,7 @@ class SyncronController extends Controller
     private $key = "";
     public function __construct()
     {
-        $instansi = User::where(["id" => auth()->user()->id, "role" => "INSTANSI"])->first();
+        $instansi = User::where(["role" => "INSTANSI"])->first();
         $this->serverUrl = env('SERVER_URL');
         if ($instansi) {
             $this->key = $instansi->remember_token;
@@ -55,7 +55,6 @@ class SyncronController extends Controller
     }
     public function syncData()
     {
-        
         $response = Http::post($this->serverUrl . "sync/syncron-data", [
             'key' => $this->key
         ]);
@@ -78,7 +77,7 @@ class SyncronController extends Controller
                     $user->password = $newUser['password'];
                     $user->role = $newUser['role'];
                     $user->route = $newUser['route'];
-                    $user->remember_token = $newUser['kode_instansi'];
+                    $user->remember_token = $newUser['remember_token'];
                     $user->status_user = $newUser['status_user'];
                     $user->user_join = $newUser['user_join'];
                     $user->name_table_join = $newUser['name_table_join'];
@@ -204,7 +203,7 @@ class SyncronController extends Controller
                     $insStaff->status_staff = $newStaff['status_staff'];
                     $insStaff->table_relation = $newStaff['table_relation'];
                     $insStaff->id_relation = $newStaff['id_relation'];
-                    $staff->save();
+                    $insStaff->save();
                     array_push($syncStaff, $insStaff);
                 }
             }

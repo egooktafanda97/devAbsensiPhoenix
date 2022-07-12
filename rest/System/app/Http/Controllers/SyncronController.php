@@ -289,7 +289,8 @@ class SyncronController extends Controller
                     $addUser->name_table_join = $siswa['user']['name_table_join'];
                     $addUser->saldo = $siswa['user']['saldo'];
                     $addUser->foto = $siswa['user']['foto'];
-                    if (!empty($checkInstansi)) {
+                    $checkUser = User::where('id',  $siswa['user']['id'])->first();
+                    if (!empty($checkIUser)) {
                         $addUser->update();
                     } else {
                         $addUser->save();
@@ -310,7 +311,8 @@ class SyncronController extends Controller
                     $addSiswa->agama = $siswa['agama'];
                     $addSiswa->tahun_masuk = $siswa['tahun_masuk'];
                     $addSiswa->kelas = $siswa['kelas'];
-                    if (!empty($checkInstansi)) {
+                    $checkSiswa = Siswa::where('nis', $siswa['nis'])->first();
+                    if (!empty($checkSiswa)) {
                         $addSiswa->update();
                     } else {
                         $addSiswa->save();
@@ -331,7 +333,6 @@ class SyncronController extends Controller
         $success = [];
         $error = [];
         foreach ($data['staff'] as $staff) {
-
             if (!empty($staff['id_staf']) && !empty($staff['user']['id'])) {
                 try {
                     DB::beginTransaction();
@@ -352,7 +353,8 @@ class SyncronController extends Controller
                     $addUser->name_table_join = $staff['user']['name_table_join'];
                     $addUser->saldo = $staff['user']['saldo'];
                     $addUser->foto = $staff['user']['foto'];
-                    if (!empty($checkInstansi)) {
+                    $checkUser = User::where('id',  $staff['user']['id'])->first();
+                    if (!empty($checkUser)) {
                         $addUser->update();
                     } else {
                         $addUser->save();
@@ -381,8 +383,9 @@ class SyncronController extends Controller
                     $addStaff->status_staff = $staff['status_staff'];
                     $addStaff->table_relation = $staff['table_relation'];
                     $addStaff->id_relation = $staff['id_relation'];
+                    $checkStaff = Staff::where('id_staf',  $staff['id_staf'])->first();
 
-                    if (!empty($checkInstansi)) {
+                    if (!empty($checkStaff)) {
                         $addStaff->update();
                     } else {
                         $addStaff->save();
@@ -395,7 +398,8 @@ class SyncronController extends Controller
                     array_push($error, $staff);
                 }
             }
-            return ["status" => true, "response" => ["success" => $success, "error" => $error], "msg" => "success to save data"];
+            
         }
+        return ["status" => true, "response" => ["success" => $success, "error" => $error], "msg" => "success to save data"];
     }
 }

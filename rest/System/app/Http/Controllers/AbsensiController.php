@@ -24,9 +24,9 @@ class AbsensiController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        // $kode = "000".$request->kode;
+        $kode = "000".$request->kode;
 
-        $user = User::where('qr_code', $request->kode)->first();
+        $user = User::where('qr_code', $kode)->first();
         if (empty($user)) {
             return response()->json(["status" => false, "response" => "", "msg" => "user belum terdaftar"], 400);
         }

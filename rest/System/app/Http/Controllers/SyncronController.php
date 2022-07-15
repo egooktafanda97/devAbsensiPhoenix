@@ -362,7 +362,7 @@ class SyncronController extends Controller
 
                     // --------------------------------------------------
                     $addStaff = new Staff;
-                    $addStaff->id_staf = $staff['id_staf'];
+                    $addStaff->id_staf  = $staff['id_staf'];
                     $addStaff->id_user = $staff['id_user'];
                     $addStaff->nik = $staff['nik'];
                     $addStaff->kode_instansi = $staff['kode_instansi'];
@@ -395,10 +395,10 @@ class SyncronController extends Controller
                     DB::commit();
                 } catch (\Throwable $e) {
                     DB::rollback();
-                    array_push($error, $staff);
+                    // array_push($error, $staff);
+                    array_push($error, $e->getMessage());
                 }
             }
-            
         }
         return ["status" => true, "response" => ["success" => $success, "error" => $error], "msg" => "success to save data"];
     }
